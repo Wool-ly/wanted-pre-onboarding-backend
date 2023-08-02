@@ -2,7 +2,6 @@ package com.preonboarding.wanted.config;
 
 import com.preonboarding.wanted.exception.CustomAccessDeniedHandler;
 import com.preonboarding.wanted.exception.CustomAuthenticationEntryPoint;
-import com.preonboarding.wanted.exception.ExceptionHandlerFilter;
 import com.preonboarding.wanted.security.JwtAuthenticationFilter;
 import com.preonboarding.wanted.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -54,8 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
         //JwtFilter 추가
         http
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(exceptionHandlerFilter, JwtAuthenticationFilter.class);
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         //JwtAuthentication exception handling
         http
             .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());

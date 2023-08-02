@@ -12,12 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import javax.validation.constraints.Email;
 
 @Setter
 @Getter
@@ -32,14 +29,9 @@ public class User extends BaseEntity implements Serializable {
     private long userId;
 
     @Column(name = "email")
-    @NotBlank(message = "이메일은 필수 입력값입니다.")
-    @Email(message = "이메일 형식에 맞지 않습니다. '@'를 포함하여 입력해주세요.")
     private String email;
 
     @Column(name = "password")
-    @NotBlank(message = "비밀번호는 필수 입력값입니다.")
-    @Pattern(regexp="^.{8,}$",
-            message = "비밀번호는 8자 이상이어야 합니다.")
     private String password;
 
     // User<->Board
