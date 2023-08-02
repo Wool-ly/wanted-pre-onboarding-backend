@@ -94,7 +94,7 @@ public class UserService {
                     .email(user.getEmail())
                     .grantType("Bearer")
                     .accessToken(jwtTokenProvider.createToken(requestDto.getEmail(), role))
-                    .result("로그인에 성공하였습니다.")
+                    .result("로그인에 성공하였습니다.  ")
                     .build();
         } catch (CustomException ex){
             throw new CustomException(ErrorCode.SERVER_ERROR);

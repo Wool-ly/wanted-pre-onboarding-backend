@@ -5,7 +5,9 @@ import com.preonboarding.wanted.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.Base64;
 import java.util.Date;
 import javax.annotation.PostConstruct;
@@ -61,11 +63,23 @@ public class JwtTokenProvider {
     // 토큰의 유효성 + 만료일자 확인  // -> 토큰이 expire되지 않았는지 True/False로 반환해줌.
     public boolean validateToken(String jwtToken) {
         try {
-            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken).getBody();
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(jwtToken);
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            String.format("exception : %s, message : 잘못된 JWT 서명입니다.", e.getClass().getName());
+            throw new TokenNotValidateException("잘못된 JWT 서명입니다.", e);
 
-            return !claims.getExpiration().before(new Date());
-        } catch (Exception e) {
-            return false;
+        } catch (ExpiredJwtException e) {
+            String.format("exception : %s, message : 만료된 JWT 토큰입니다.", e.getClass().getName());
+            throw new TokenNotValidateException("만료된 JWT 토큰입니다.", e);
+
+        } catch (UnsupportedJwtException e) {
+            String.format("exception : %s, message : 지원되지 않는 JWT 토큰입니다.", e.getClass().getName());
+            throw new TokenNotValidateException("지원되지 않는 JWT 토큰입니다.", e);
+
+        } catch (IllegalArgumentException e) {
+            String.format("exception : %s, message : JWT 토큰이 잘못되었습니다.", e.getClass().getName());
+            throw new TokenNotValidateException("JWT 토큰이 잘못되었습니다.", e);
         }
     }
 
@@ -83,5 +97,12 @@ public class JwtTokenProvider {
             return e.getClaims().getSubject();
         }
     }
+
+    //TODO 삭제 필요할지도
+    // 토큰에서 회원 정보 추출
+    public String getUserPk(String token) {
+        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("email");
+    }
+
 
 }
