@@ -98,11 +98,4 @@ public class JwtTokenProvider {
         }
     }
 
-    //TODO 삭제 필요할지도
-    // 토큰에서 회원 정보 추출
-    public String getUserPk(String token) {
-        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("email");
-    }
-
-
 }
