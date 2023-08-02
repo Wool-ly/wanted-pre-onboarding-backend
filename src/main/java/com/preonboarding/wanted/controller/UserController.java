@@ -14,19 +14,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @AllArgsConstructor
 @Api(value = "회원관리")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private final UserService userService;
 
     // 과제 1. 사용자 회원가입 엔드포인트
     @ApiOperation(value = "회원가입")
-    @PostMapping(value = "/api/v1/users/signUp")
+    @PostMapping(value = "/signUp")
     public ResponseEntity<SignUpPostResponse> userSignUp(
             @Valid @RequestBody SignUpPostRequest requestDto) {
         SignUpPostResponse response = userService.userSignUp(requestDto);
@@ -35,7 +37,7 @@ public class UserController {
 
     //과제 2. 사용자 로그인 엔드포인트
     @ApiOperation(value = "로그인")
-    @PostMapping(value = "/api/v1/users/login")
+    @PostMapping(value = "/login")
     public ResponseEntity<LoginPostResponse> userLogin(
             @Valid @RequestBody LoginPostRequest requestDto){
         LoginPostResponse response = userService.userLogin(requestDto);
