@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @ApiModel
 @NoArgsConstructor(force = true)
-public class CreatePostRequest {
+public class WritePostRequest {
 
     @NotBlank(message = "제목은 필수 입력값입니다.")
     @ApiModelProperty(name = "제목", example = "title", required = true)
