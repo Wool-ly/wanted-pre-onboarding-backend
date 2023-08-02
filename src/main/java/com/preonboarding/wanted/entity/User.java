@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +18,6 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "user")
 @NoArgsConstructor
 public class User extends BaseEntity implements Serializable {
 
@@ -34,9 +32,9 @@ public class User extends BaseEntity implements Serializable {
     @Column(name = "password")
     private String password;
 
-    // User<->Board
+    // User <-> Post
     @OneToMany(mappedBy = "user")
-    private List<Board> boardList = new ArrayList<>();
+    private List<Post> postList = new ArrayList<>();
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING) //저장될때는 string으로 저장되도록
