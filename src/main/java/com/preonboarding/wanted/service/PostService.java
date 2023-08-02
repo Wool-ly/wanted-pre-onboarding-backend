@@ -1,8 +1,7 @@
 package com.preonboarding.wanted.service;
 
-import com.preonboarding.wanted.dto.request.CreatePostRequest;
-import com.preonboarding.wanted.dto.response.CreatePostResponse;
-import com.preonboarding.wanted.dto.response.ReadGetResponse;
+import com.preonboarding.wanted.dto.request.WritePostRequest;
+import com.preonboarding.wanted.dto.response.WritePostResponse;
 import com.preonboarding.wanted.entity.Post;
 import com.preonboarding.wanted.entity.User;
 import com.preonboarding.wanted.repository.PostRepository;
@@ -26,7 +25,7 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreatePostResponse createPost(CreatePostRequest requestDto) {
+    public WritePostResponse createPost(WritePostRequest requestDto) {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails)principal;
@@ -44,7 +43,7 @@ public class PostService {
 
         postRepository.save(post);
 
-        return CreatePostResponse
+        return WritePostResponse
                 .builder()
                 .result("게시글 작성이 완료되었습니다.")
                 .build();

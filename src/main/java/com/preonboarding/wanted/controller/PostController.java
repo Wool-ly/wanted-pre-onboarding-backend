@@ -1,7 +1,7 @@
 package com.preonboarding.wanted.controller;
 
-import com.preonboarding.wanted.dto.request.CreatePostRequest;
-import com.preonboarding.wanted.dto.response.CreatePostResponse;
+import com.preonboarding.wanted.dto.request.WritePostRequest;
+import com.preonboarding.wanted.dto.response.WritePostResponse;
 import com.preonboarding.wanted.entity.Post;
 import com.preonboarding.wanted.service.PostService;
 import com.preonboarding.wanted.service.UserService;
@@ -32,9 +32,9 @@ public class PostController {
     // 과제 3. 새로운 게시글을 생성하는 엔드포인트
     @ApiOperation(value = "게시글 작성")
     @PostMapping(value = "/write")
-    public ResponseEntity<CreatePostResponse> writePost(
-            @Valid @RequestBody CreatePostRequest requestDto) {
-        CreatePostResponse response = postService.createPost(requestDto);
+    public ResponseEntity<WritePostResponse> writePost(
+        @Valid @RequestBody WritePostRequest requestDto) {
+        WritePostResponse response = postService.createPost(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
