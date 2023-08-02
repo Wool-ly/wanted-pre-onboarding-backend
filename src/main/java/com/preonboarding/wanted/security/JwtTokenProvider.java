@@ -3,12 +3,12 @@ package com.preonboarding.wanted.security;
 import com.preonboarding.wanted.entity.UserRole;
 import com.preonboarding.wanted.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Base64;
 import java.util.Date;
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +28,13 @@ public class JwtTokenProvider {
     private String secretKey;
 
     //토큰 유효시간 설정
-    private Long tokenValidTime = 240 * 60 * 1000L;
+    private long tokenValidTime = 1000L * 60 * 30; // 30분
 
     //secretkey를 미리 인코딩 해줌.
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
-
 
     //JWT 토큰 생성
     public String createToken(String email, UserRole role) {
@@ -59,12 +58,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // Request의 Header에서 token 값을 가져옵니다. "Authorization" : "TOKEN값'
-    public String resolveToken(HttpServletRequest request) {
-
-        return request.getHeader("JWT");
-    }
-
     // 토큰의 유효성 + 만료일자 확인  // -> 토큰이 expire되지 않았는지 True/False로 반환해줌.
     public boolean validateToken(String jwtToken) {
         try {
@@ -78,14 +71,17 @@ public class JwtTokenProvider {
 
     //JWT 토큰에서 인증정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(this.getUserPk(token));
+        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(getUserEmail(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     // 토큰에서 회원 정보 추출
-    public String getUserPk(String token) {
-        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("email");
+    public String getUserEmail(String token) {
+        try {
+            return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("email");
+        } catch(ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
     }
-
 
 }

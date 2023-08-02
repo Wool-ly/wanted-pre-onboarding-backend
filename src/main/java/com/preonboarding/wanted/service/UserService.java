@@ -2,27 +2,33 @@ package com.preonboarding.wanted.service;
 
 import com.preonboarding.wanted.dto.request.LoginPostRequest;
 import com.preonboarding.wanted.dto.request.SignUpPostRequest;
+import com.preonboarding.wanted.dto.response.LoginPostResponse;
 import com.preonboarding.wanted.dto.response.SignUpPostResponse;
 import com.preonboarding.wanted.entity.User;
 import com.preonboarding.wanted.entity.UserRole;
 import com.preonboarding.wanted.exception.CustomException;
 import com.preonboarding.wanted.exception.ErrorCode;
 import com.preonboarding.wanted.repository.UserRepository;
+import com.preonboarding.wanted.security.JwtTokenProvider;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @AllArgsConstructor
 public class UserService {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private static final String ADMIN_PW = "AAABnv/xRVklrnYxKZ0aHgTBcXukeZygoC";
 
+    @Transactional
     public SignUpPostResponse userSignUp(SignUpPostRequest requestDto) {
 
         Optional<User> userEmail = userRepository.findByEmail(requestDto.getEmail());
@@ -60,21 +66,39 @@ public class UserService {
             user.setRole(role);
             userRepository.save(user);
 
-            return SignUpPostResponse.builder()
+            return SignUpPostResponse
+                    .builder()
+                    .email(user.getEmail())
                     .result("회원 가입이 완료되었습니다.")
                     .build();
 
         }
     }
 
-    public User userLogin(LoginPostRequest requestDto){
-        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
-                () -> new CustomException(ErrorCode.NO_USER)
-        );
-        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw new CustomException(ErrorCode.NO_USER);
+    @Transactional
+    public LoginPostResponse userLogin(LoginPostRequest requestDto){
+
+        try{
+
+            User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                    () -> new CustomException(ErrorCode.NO_USER)
+            );
+            if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+                throw new CustomException(ErrorCode.NO_USER);
+            }
+
+            UserRole role = user.getRole();
+
+            return LoginPostResponse
+                    .builder()
+                    .email(user.getEmail())
+                    .grantType("Bearer")
+                    .accessToken(jwtTokenProvider.createToken(requestDto.getEmail(), role))
+                    .result("로그인에 성공하였습니다.")
+                    .build();
+        } catch (CustomException ex){
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
-        return user;
     }
 
 
