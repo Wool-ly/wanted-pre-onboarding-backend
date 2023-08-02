@@ -1,39 +1,41 @@
 package com.preonboarding.wanted.exception;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import org.springframework.http.HttpStatus;
 
 @Getter
-@ToString
-@RequiredArgsConstructor
 public class ErrorResponse {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private String message;
+    private String code;
+    private int status;
+    private List<FieldError> errors = new ArrayList<>();
 
-    private final String timestamp;
-    private final int status;
-    private final String error;
-    private final String message;
-    private final String path;
-
-    public static ErrorResponse of(HttpStatus status, String message, HttpServletRequest request) {
-        String timestamp = LocalDateTime.now().format(formatter);
-        String path = request.getRequestURI();
-        String error = status.getReasonPhrase();
-        return new ErrorResponse(timestamp, status.value(), error, message, path);
+    @Builder
+    public ErrorResponse(String message, String code, int status, List<FieldError> errors) {
+        this.message = message;
+        this.code = code;
+        this.status = status;
+        this.errors = initErrors(errors);
     }
 
-    public String convertToJson() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(this);
+    private List<FieldError> initErrors(List<FieldError> errors) {
+        return (errors == null) ? new ArrayList<>() : errors;
     }
 
+    @Getter
+    public static class FieldError {
+        private String field;
+        private String value;
+        private String reason;
 
+        @Builder
+        public FieldError(String field, String value, String reason) {
+            this.field = field;
+            this.value = value;
+            this.reason = reason;
+        }
+    }
 }

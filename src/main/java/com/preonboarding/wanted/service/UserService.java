@@ -50,16 +50,6 @@ public class UserService {
             // 사용자 ROLE 확인
             UserRole role = UserRole.ROLE_MEMBER;
 
-            //true면 == 관리자이면
-            //boolean 타입의 getter는 is를 붙인다
-            if (requestDto.isAdmin()) {
-                if (!requestDto.getAdminToken().equals(ADMIN_PW)) {
-                    throw new CustomException(ErrorCode.ADMIN_TOKEN);
-                }
-                //role을 admin으로 바꿔준다
-                role = UserRole.ROLE_ADMIN;
-            }
-
             User user = new User();
             user.setEmail(requestDto.getEmail());
             user.setPassword(encodePw);
@@ -81,7 +71,7 @@ public class UserService {
         try{
 
             User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
-                    () -> new CustomException(ErrorCode.NO_USER)
+                    () -> new CustomException(ErrorCode.INPUT_VALUE_INVALID)
             );
             if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
                 throw new CustomException(ErrorCode.NO_USER);
