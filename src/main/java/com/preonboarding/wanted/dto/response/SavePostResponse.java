@@ -14,9 +14,9 @@ import lombok.Setter;
 @ApiModel
 @NoArgsConstructor
 @AllArgsConstructor
-public class WritePostResponse {
+public class SavePostResponse {
 
-    @ApiModelProperty(name = "결과", example = "회원가입이 완료되었습니다.", required = true)
+    @ApiModelProperty(name = "결과", example = "게시글 작성이 완료되었습니다.", required = true)
     private String result;
 
 }
