@@ -31,6 +31,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/h2-console/**");
+
+        // swagger
+        web.ignoring().antMatchers("/v2/api-docs",  "/configuration/ui",
+                "/swagger-resources", "/configuration/security",
+                "/swagger-ui.html", "/webjars/**","/swagger/**");
     }
 
     @Override
@@ -48,6 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
             .antMatchers("/api/v1/users/signUp/**").permitAll()
             .antMatchers("/api/v1/users/login/**").permitAll()
             .antMatchers("/exception/**").permitAll()
+            .antMatchers("/swagger-ui/**").permitAll()
+            .antMatchers("/swagger-resources/**").permitAll()
             .anyRequest().authenticated();
 
         //JwtFilter 추가
