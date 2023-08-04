@@ -11,15 +11,12 @@ import com.preonboarding.wanted.entity.Post;
 import com.preonboarding.wanted.entity.User;
 import com.preonboarding.wanted.repository.PostRepository;
 import com.preonboarding.wanted.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -57,37 +54,24 @@ public class PostService {
                 .build();
     }
 
-    @Transactional
-    public PagingPostResponse selectPostList(int pageNo, int pageSize, String sortBy, String sortDir) {
+    @Transactional(readOnly = true)
+    public List<PagingPostResponse> selectPostList(Pageable paging) {
 
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
+        Iterable<Post> posts = postRepository.findAll(paging);
+        List<PagingPostResponse> postResponses = new ArrayList<>();
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<Post> posts = postRepository.findAll(pageable);
-
-        List<Post> listOfPosts = posts.getContent();
-
-        List<Post> content= listOfPosts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
-
-        PagingPostResponse postResponse = new PagingPostResponse();
-        postResponse.setContent(content);
-        postResponse.setPageNo(posts.getNumber());
-        postResponse.setPageSize(posts.getSize());
-        postResponse.setTotalElements(posts.getTotalElements());
-        postResponse.setTotalPages(posts.getTotalPages());
-        postResponse.setLast(posts.isLast());
-
-        return postResponse;
-    }
-
-    private Post mapToDto(Post post) {
-        Post postDto = new Post();
-        postDto.setPostId(post.getPostId());
-        postDto.setTitle(post.getTitle());
-        postDto.setContent(post.getContent());
-
-        return postDto;
+        posts.forEach(post -> postResponses.add(
+                PagingPostResponse
+                        .builder()
+                        .postId(post.getPostId())
+                        .email(post.getUser().getEmail())
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .createdDt(post.getCreatedDt())
+                        .updatedDt(post.getUpdatedDt())
+                        .build())
+                );
+        return postResponses;
     }
 
     @Transactional
@@ -119,6 +103,7 @@ public class PostService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public GetPostResponse getPost(Long postId) {
 
         Post entity = postRepository.findById(postId).orElseThrow(()

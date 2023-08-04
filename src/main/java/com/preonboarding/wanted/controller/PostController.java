@@ -8,12 +8,14 @@ import com.preonboarding.wanted.dto.response.PagingPostResponse;
 import com.preonboarding.wanted.dto.response.SavePostResponse;
 import com.preonboarding.wanted.dto.response.UpdatePostResponse;
 import com.preonboarding.wanted.service.PostService;
-import com.preonboarding.wanted.utils.AppConstants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,13 +49,16 @@ public class PostController {
     // 과제 4. 게시글 목록을 조회하는 엔드포인트
     @ApiOperation(value = "게시글 목록 조회")
     @GetMapping
-    public PagingPostResponse postList(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir)
-    {
-        return postService.selectPostList(pageNo, pageSize, sortBy, sortDir);
+    public ResponseEntity<List<PagingPostResponse>> selectPostList(@RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "0", required = false) Integer page) throws Exception {
+
+        Pageable paging  = PageRequest.of(page, pageSize);
+
+        List<PagingPostResponse> PagingPostResponse = postService.selectPostList(paging);
+
+        return new ResponseEntity<>(PagingPostResponse, HttpStatus.CREATED);
     }
+
 
     // 과제 5. 특정 게시글을 조회하는 엔드포인트
     @ApiOperation(value = "게시글 상세 조회")

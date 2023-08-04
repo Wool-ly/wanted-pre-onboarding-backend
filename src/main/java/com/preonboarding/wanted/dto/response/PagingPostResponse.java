@@ -1,10 +1,9 @@
 package com.preonboarding.wanted.dto.response;
 
-import com.preonboarding.wanted.entity.Post;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,12 +25,15 @@ public class PagingPostResponse {
     private String title;
 
     @ApiModelProperty(name = "내용", example = "content", required = true)
-    private List<Post> content;
+    private String content;
 
     @ApiModelProperty(name = "이메일", example = "test@gmail.com", required = true)
     private String email;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime updatedDt;
 
     private int pageNo;
