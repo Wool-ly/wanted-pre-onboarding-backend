@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @ApiModel
 @NoArgsConstructor(force = true)
-public class LoginPostRequest {
+public class SignUpRequest {
 
     @NotBlank(message = "이메일은 필수 입력값입니다.")
     @Email(message = "이메일 형식에 맞지 않습니다. '@'를 포함하여 입력해주세요.")
@@ -22,5 +22,8 @@ public class LoginPostRequest {
     @Pattern(regexp="^.{8,}$", message = "비밀번호는 8자 이상이어야 합니다.")
     @ApiModelProperty(name = "비밀번호", example = "password123!", required = true)
     private String password;
+
+    private boolean admin;
+    private String adminToken;
 
 }
