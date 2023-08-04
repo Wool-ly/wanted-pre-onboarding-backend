@@ -2,6 +2,7 @@ package com.preonboarding.wanted.controller;
 
 import com.preonboarding.wanted.dto.request.SavePostRequest;
 import com.preonboarding.wanted.dto.request.UpdatePostRequest;
+import com.preonboarding.wanted.dto.response.DeletePostResponse;
 import com.preonboarding.wanted.dto.response.GetPostResponse;
 import com.preonboarding.wanted.dto.response.PagingPostResponse;
 import com.preonboarding.wanted.dto.response.SavePostResponse;
@@ -87,10 +88,10 @@ public class PostController {
     // 과제 7. 특정 게시글을 삭제하는 엔드포인트
     @ApiOperation(value = "게시글 삭제")
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deletePost(
+    public ResponseEntity<DeletePostResponse> deletePost(
             @PathVariable("id") Long postId, Principal principal) {
 
-        ResponseEntity<?> response = postService.deletePost(postId, principal);
+        DeletePostResponse response = postService.deletePost(postId, principal);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

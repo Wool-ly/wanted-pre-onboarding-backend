@@ -2,6 +2,7 @@ package com.preonboarding.wanted.service;
 
 import com.preonboarding.wanted.dto.request.SavePostRequest;
 import com.preonboarding.wanted.dto.request.UpdatePostRequest;
+import com.preonboarding.wanted.dto.response.DeletePostResponse;
 import com.preonboarding.wanted.dto.response.GetPostResponse;
 import com.preonboarding.wanted.dto.response.PagingPostResponse;
 import com.preonboarding.wanted.dto.response.SavePostResponse;
@@ -17,8 +18,6 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -101,21 +100,24 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseEntity<?> deletePost(Long postId, Principal principal) {
+    public DeletePostResponse deletePost(Long postId, Principal principal) {
 
         Optional<Post> findPost = postRepository.findById(postId);
 
         if(findPost.get().getUser().getEmail().equals(principal.getName())) {
 
-            System.out.println("findPost.get().getUser().getEmail() = " + findPost.get().getUser().getEmail());
-            System.out.println("principal.getName() = " + principal.getName());
-
             Post post = findPost.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
             postRepository.delete(post);
 
-            return ResponseEntity.ok("게시글이 정상적으로 삭제되었습니다.");
+            return DeletePostResponse
+                    .builder()
+                    .result("게시글 삭제가 완료되었습니다.")
+                    .build();
         } else  {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시글 삭제 권한이 없습니다.");
+            return DeletePostResponse
+                    .builder()
+                    .result("게시글 삭제 권한이 없습니다.")
+                    .build();
         }
 
     }
