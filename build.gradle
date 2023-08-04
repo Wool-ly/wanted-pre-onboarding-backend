@@ -27,6 +27,7 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	implementation 'org.projectlombok:lombok:1.18.24'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'mysql:mysql-connector-java:8.0.33'
 
 	annotationProcessor('org.projectlombok:lombok:1.18.24')
 	testAnnotationProcessor('org.projectlombok:lombok')
@@ -54,4 +55,8 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jar {
+	enabled = false
 }

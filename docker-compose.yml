@@ -1,0 +1,43 @@
+version: "3"
+services:
+  wantedDB:
+    container_name: wantedDB
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - mysql_volume:/mysql/data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root1234!
+      - MYSQL_DATABASE=wanted
+      - MYSQL_USER=wanted
+      - MYSQL_PASSWORD=wanted1!
+    ports:
+      - "3306:3306"
+    networks:
+      - wanted-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+  wantedServer:
+    container_name: wantedServer
+    ports:
+      - "8080:8080"
+    image: woollly/wanted_backend_server:1.0
+    volumes:
+      - wanted_images:/app/wanted/images
+    networks:
+      - wanted-network
+    depends_on:
+      wantedDB:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://wantedDB:3306/wanted?useSSL=false&serverTimezone=UTC
+networks:
+  wanted-network:
+    driver: bridge
+volumes:
+  mysql_volume:
+    driver: local
+  wanted_images:
+    driver: local
