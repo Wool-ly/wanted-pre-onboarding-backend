@@ -1,19 +1,23 @@
 package com.preonboarding.wanted.service;
 
-import com.preonboarding.wanted.dto.request.UpdatePostRequest;
 import com.preonboarding.wanted.dto.request.SavePostRequest;
+import com.preonboarding.wanted.dto.request.UpdatePostRequest;
 import com.preonboarding.wanted.dto.response.DeletePostResponse;
 import com.preonboarding.wanted.dto.response.GetPostResponse;
-import com.preonboarding.wanted.dto.response.UpdatePostResponse;
+import com.preonboarding.wanted.dto.response.PagingPostResponse;
 import com.preonboarding.wanted.dto.response.SavePostResponse;
+import com.preonboarding.wanted.dto.response.UpdatePostResponse;
 import com.preonboarding.wanted.entity.Post;
 import com.preonboarding.wanted.entity.User;
 import com.preonboarding.wanted.repository.PostRepository;
 import com.preonboarding.wanted.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -51,8 +55,29 @@ public class PostService {
                 .build();
     }
 
-    public List<Post> selectPostList() {
-        return postRepository.findAll();
+    @Transactional
+    public PagingPostResponse selectPostList(Pageable pageable) {
+
+        Page<Post> postPage = postRepository.findAll(pageable);
+
+        List<Post> content = postPage.getContent().stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+
+        return PagingPostResponse.builder()
+                .content(content)
+                .pageNo(postPage.getNumber())
+                .pageSize(postPage.getSize())
+                .totalElements(postPage.getTotalElements())
+                .totalPages(postPage.getTotalPages())
+                .last(postPage.isLast())
+                .build();
+    }
+
+    private Post mapToDto(Post post) {
+        Post postDto = new Post();
+        postDto.setPostId(post.getPostId());
+        return postDto;
     }
 
     @Transactional
@@ -91,4 +116,5 @@ public class PostService {
 
         return new GetPostResponse(entity);
     }
+
 }
