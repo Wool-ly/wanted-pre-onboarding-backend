@@ -4,16 +4,13 @@ import com.preonboarding.wanted.dto.request.SavePostRequest;
 import com.preonboarding.wanted.dto.request.UpdatePostRequest;
 import com.preonboarding.wanted.dto.response.DeletePostResponse;
 import com.preonboarding.wanted.dto.response.GetPostResponse;
-import com.preonboarding.wanted.dto.response.PagingPostResponse;
 import com.preonboarding.wanted.dto.response.SavePostResponse;
 import com.preonboarding.wanted.dto.response.UpdatePostResponse;
 import com.preonboarding.wanted.entity.Post;
 import com.preonboarding.wanted.entity.User;
 import com.preonboarding.wanted.repository.PostRepository;
 import com.preonboarding.wanted.repository.UserRepository;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -56,22 +53,8 @@ public class PostService {
     }
 
     @Transactional
-    public PagingPostResponse selectPostList(Pageable pageable) {
-
-        Page<Post> postPage = postRepository.findAll(pageable);
-
-        List<Post> content = postPage.getContent().stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
-
-        return PagingPostResponse.builder()
-                .content(content)
-                .pageNo(postPage.getNumber())
-                .pageSize(postPage.getSize())
-                .totalElements(postPage.getTotalElements())
-                .totalPages(postPage.getTotalPages())
-                .last(postPage.isLast())
-                .build();
+    public Page<Post> selectPostList(final Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 
     private Post mapToDto(Post post) {

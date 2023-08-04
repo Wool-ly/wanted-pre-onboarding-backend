@@ -37,4 +37,7 @@ public class PagingPostResponse {
     private long totalElements;
     private int totalPages;
     private boolean last;
+
+    public PagingPostResponse(Post post) {
+    }
 }

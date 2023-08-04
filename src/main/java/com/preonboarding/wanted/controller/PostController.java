@@ -13,9 +13,8 @@ import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,11 +47,9 @@ public class PostController {
     // 과제 4. 게시글 목록을 조회하는 엔드포인트
     @ApiOperation(value = "게시글 목록 조회")
     @GetMapping
-    public ResponseEntity<PagingPostResponse> postList(
-            @PageableDefault(sort = "postId", direction = Sort.Direction.DESC, size = 10) Pageable pageable)
+    public Page<PagingPostResponse> postList(final Pageable pageable)
     {
-        PagingPostResponse response = postService.selectPostList(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return postService.selectPostList(pageable).map(PagingPostResponse::new);
     }
 
     // 과제 5. 특정 게시글을 조회하는 엔드포인트
