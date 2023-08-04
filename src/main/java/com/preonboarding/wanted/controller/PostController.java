@@ -8,13 +8,12 @@ import com.preonboarding.wanted.dto.response.PagingPostResponse;
 import com.preonboarding.wanted.dto.response.SavePostResponse;
 import com.preonboarding.wanted.dto.response.UpdatePostResponse;
 import com.preonboarding.wanted.service.PostService;
+import com.preonboarding.wanted.utils.AppConstants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -47,9 +47,12 @@ public class PostController {
     // 과제 4. 게시글 목록을 조회하는 엔드포인트
     @ApiOperation(value = "게시글 목록 조회")
     @GetMapping
-    public Page<PagingPostResponse> postList(final Pageable pageable)
+    public PagingPostResponse postList(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir)
     {
-        return postService.selectPostList(pageable).map(PagingPostResponse::new);
+        return postService.selectPostList(pageNo, pageSize, sortBy, sortDir);
     }
 
     // 과제 5. 특정 게시글을 조회하는 엔드포인트

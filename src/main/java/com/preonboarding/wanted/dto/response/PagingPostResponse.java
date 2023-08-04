@@ -9,12 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
 @Getter
 @Builder
 @ApiModel
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class PagingPostResponse {
 
     @ApiModelProperty(name = "아이디", example = "1", required = true)
@@ -38,6 +40,4 @@ public class PagingPostResponse {
     private int totalPages;
     private boolean last;
 
-    public PagingPostResponse(Post post) {
-    }
 }

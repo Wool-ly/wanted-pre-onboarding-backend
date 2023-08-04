@@ -4,17 +4,22 @@ import com.preonboarding.wanted.dto.request.SavePostRequest;
 import com.preonboarding.wanted.dto.request.UpdatePostRequest;
 import com.preonboarding.wanted.dto.response.DeletePostResponse;
 import com.preonboarding.wanted.dto.response.GetPostResponse;
+import com.preonboarding.wanted.dto.response.PagingPostResponse;
 import com.preonboarding.wanted.dto.response.SavePostResponse;
 import com.preonboarding.wanted.dto.response.UpdatePostResponse;
 import com.preonboarding.wanted.entity.Post;
 import com.preonboarding.wanted.entity.User;
 import com.preonboarding.wanted.repository.PostRepository;
 import com.preonboarding.wanted.repository.UserRepository;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -53,13 +58,35 @@ public class PostService {
     }
 
     @Transactional
-    public Page<Post> selectPostList(final Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public PagingPostResponse selectPostList(int pageNo, int pageSize, String sortBy, String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        List<Post> listOfPosts = posts.getContent();
+
+        List<Post> content= listOfPosts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
+
+        PagingPostResponse postResponse = new PagingPostResponse();
+        postResponse.setContent(content);
+        postResponse.setPageNo(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setLast(posts.isLast());
+
+        return postResponse;
     }
 
     private Post mapToDto(Post post) {
         Post postDto = new Post();
         postDto.setPostId(post.getPostId());
+        postDto.setTitle(post.getTitle());
+        postDto.setContent(post.getContent());
+
         return postDto;
     }
 
