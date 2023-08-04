@@ -12,6 +12,9 @@
 <br>
 <br>
 
+## 2-1. docker compose + AWS 클라우드 배포
+
+
 ## 3. 데이터베이스 테이블 구조
 <br>
 <br>
