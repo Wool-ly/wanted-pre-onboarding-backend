@@ -12,8 +12,13 @@
 <br>
 <br>
 
+
 ## 2-1. docker compose + AWS 클라우드 배포
 
+시스템 흐름도
+![docker-workflow-steps](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/09eee86e-7c66-44f7-acba-fa31e70eec16)
+
+출처 : https://devfoxstar.github.io/java/springboot-docker-ec2-deploy/
 
 ## 3. 데이터베이스 테이블 구조
 <br>
