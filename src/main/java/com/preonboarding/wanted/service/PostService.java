@@ -1,19 +1,23 @@
 package com.preonboarding.wanted.service;
 
-import com.preonboarding.wanted.dto.request.UpdatePostRequest;
 import com.preonboarding.wanted.dto.request.SavePostRequest;
+import com.preonboarding.wanted.dto.request.UpdatePostRequest;
 import com.preonboarding.wanted.dto.response.DeletePostResponse;
 import com.preonboarding.wanted.dto.response.GetPostResponse;
-import com.preonboarding.wanted.dto.response.UpdatePostResponse;
+import com.preonboarding.wanted.dto.response.PagingPostResponse;
 import com.preonboarding.wanted.dto.response.SavePostResponse;
+import com.preonboarding.wanted.dto.response.UpdatePostResponse;
 import com.preonboarding.wanted.entity.Post;
 import com.preonboarding.wanted.entity.User;
 import com.preonboarding.wanted.repository.PostRepository;
 import com.preonboarding.wanted.repository.UserRepository;
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -51,39 +55,74 @@ public class PostService {
                 .build();
     }
 
-    public List<Post> selectPostList() {
-        return postRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<PagingPostResponse> selectPostList(Pageable paging) {
+
+        Iterable<Post> posts = postRepository.findAll(paging);
+        List<PagingPostResponse> postResponses = new ArrayList<>();
+
+        posts.forEach(post -> postResponses.add(
+                PagingPostResponse
+                        .builder()
+                        .postId(post.getPostId())
+                        .email(post.getUser().getEmail())
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .createdDt(post.getCreatedDt())
+                        .updatedDt(post.getUpdatedDt())
+                        .build())
+                );
+        return postResponses;
     }
 
     @Transactional
-    public UpdatePostResponse updatePost(Long postId, UpdatePostRequest requestDto) {
+    public UpdatePostResponse updatePost(Long postId, UpdatePostRequest requestDto, Principal principal) {
 
-        Optional<Post> byId = postRepository.findById(postId);
-        Post post = byId.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        Optional<Post> findPost = postRepository.findById(postId);
 
-        post.setTitle(requestDto.getTitle());
-        post.setContent(requestDto.getContent());
+        if(findPost.get().getUser().getEmail().equals(principal.getName())) {
 
-        return UpdatePostResponse
-                .builder()
-                .result("게시글 수정이 완료되었습니다.")
-                .build();
+            Post post = findPost.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+            post.setTitle(requestDto.getTitle());
+            post.setContent(requestDto.getContent());
+
+            return UpdatePostResponse
+                    .builder()
+                    .result("게시글 수정이 완료되었습니다.")
+                    .build();
+        } else  {
+            return UpdatePostResponse
+                    .builder()
+                    .result("게시글 수정 권한이 없습니다.")
+                    .build();
+        }
+
     }
 
     @Transactional
-    public DeletePostResponse deletePost(Long postId) {
+    public DeletePostResponse deletePost(Long postId, Principal principal) {
 
-        Optional<Post> byId = postRepository.findById(postId);
-        Post post = byId.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        Optional<Post> findPost = postRepository.findById(postId);
 
-        postRepository.delete(post);
+        if(findPost.get().getUser().getEmail().equals(principal.getName())) {
 
-        return DeletePostResponse
-                .builder()
-                .result("게시글 삭제가 완료되었습니다.")
-                .build();
+            Post post = findPost.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+            postRepository.delete(post);
+
+            return DeletePostResponse
+                    .builder()
+                    .result("게시글 삭제가 완료되었습니다.")
+                    .build();
+        } else  {
+            return DeletePostResponse
+                    .builder()
+                    .result("게시글 삭제 권한이 없습니다.")
+                    .build();
+        }
+
     }
 
+    @Transactional(readOnly = true)
     public GetPostResponse getPost(Long postId) {
 
         Post entity = postRepository.findById(postId).orElseThrow(()
@@ -91,4 +130,5 @@ public class PostService {
 
         return new GetPostResponse(entity);
     }
+
 }

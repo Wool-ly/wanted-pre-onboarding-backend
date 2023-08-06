@@ -1,9 +1,9 @@
 package com.preonboarding.wanted.controller;
 
-import com.preonboarding.wanted.dto.request.LoginPostRequest;
-import com.preonboarding.wanted.dto.request.SignUpPostRequest;
-import com.preonboarding.wanted.dto.response.LoginPostResponse;
-import com.preonboarding.wanted.dto.response.SignUpPostResponse;
+import com.preonboarding.wanted.dto.request.LoginRequest;
+import com.preonboarding.wanted.dto.request.SignUpRequest;
+import com.preonboarding.wanted.dto.response.LoginResponse;
+import com.preonboarding.wanted.dto.response.SignUpResponse;
 import com.preonboarding.wanted.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,18 +29,18 @@ public class UserController {
     // 과제 1. 사용자 회원가입 엔드포인트
     @ApiOperation(value = "회원가입")
     @PostMapping(value = "/signUp")
-    public ResponseEntity<SignUpPostResponse> userSignUp(
-            @Valid @RequestBody SignUpPostRequest requestDto) {
-        SignUpPostResponse response = userService.userSignUp(requestDto);
+    public ResponseEntity<SignUpResponse> userSignUp(
+            @Valid @RequestBody SignUpRequest requestDto) {
+        SignUpResponse response = userService.userSignUp(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     //과제 2. 사용자 로그인 엔드포인트
     @ApiOperation(value = "로그인")
     @PostMapping(value = "/login")
-    public ResponseEntity<LoginPostResponse> userLogin(
-            @Valid @RequestBody LoginPostRequest requestDto){
-        LoginPostResponse response = userService.userLogin(requestDto);
+    public ResponseEntity<LoginResponse> userLogin(
+            @Valid @RequestBody LoginRequest requestDto){
+        LoginResponse response = userService.userLogin(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

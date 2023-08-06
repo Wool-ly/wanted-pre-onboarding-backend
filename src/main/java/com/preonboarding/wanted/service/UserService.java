@@ -1,9 +1,9 @@
 package com.preonboarding.wanted.service;
 
-import com.preonboarding.wanted.dto.request.LoginPostRequest;
-import com.preonboarding.wanted.dto.request.SignUpPostRequest;
-import com.preonboarding.wanted.dto.response.LoginPostResponse;
-import com.preonboarding.wanted.dto.response.SignUpPostResponse;
+import com.preonboarding.wanted.dto.request.LoginRequest;
+import com.preonboarding.wanted.dto.request.SignUpRequest;
+import com.preonboarding.wanted.dto.response.LoginResponse;
+import com.preonboarding.wanted.dto.response.SignUpResponse;
 import com.preonboarding.wanted.entity.User;
 import com.preonboarding.wanted.entity.UserRole;
 import com.preonboarding.wanted.exception.CustomException;
@@ -29,7 +29,7 @@ public class UserService {
     private static final String ADMIN_PW = "AAABnv/xRVklrnYxKZ0aHgTBcXukeZygoC";
 
     @Transactional
-    public SignUpPostResponse userSignUp(SignUpPostRequest requestDto) {
+    public SignUpResponse userSignUp(SignUpRequest requestDto) {
 
         Optional<User> userEmail = userRepository.findByEmail(requestDto.getEmail());
 
@@ -39,7 +39,7 @@ public class UserService {
 
         //이메일 중복 검사
         if (userEmail.isPresent()) {
-            return SignUpPostResponse.builder()
+            return SignUpResponse.builder()
                     .result("이미 등록된 이메일입니다. \n다른 이메일을 입력해주세요.")
                     .build();
         }else {
@@ -56,9 +56,8 @@ public class UserService {
             user.setRole(role);
             userRepository.save(user);
 
-            return SignUpPostResponse
+            return SignUpResponse
                     .builder()
-                    .email(user.getEmail())
                     .result("회원 가입이 완료되었습니다.")
                     .build();
 
@@ -66,7 +65,7 @@ public class UserService {
     }
 
     @Transactional
-    public LoginPostResponse userLogin(LoginPostRequest requestDto){
+    public LoginResponse userLogin(LoginRequest requestDto){
 
         try{
 
@@ -79,7 +78,7 @@ public class UserService {
 
             UserRole role = user.getRole();
 
-            return LoginPostResponse
+            return LoginResponse
                     .builder()
                     .email(user.getEmail())
                     .grantType("Bearer")
