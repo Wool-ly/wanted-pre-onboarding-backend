@@ -22,9 +22,10 @@
 
 ## 3. 데이터베이스 테이블 구조
 
-ERD : https://www.erdcloud.com/d/jaovFfbASuZswL8FX
+ERD : https://www.erdcloud.com/d/LrrABe7xF5vR6TSDF
 
-![image](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/2ffc34ea-aea5-4fb9-b6fa-cd42c8b4fe03)
+![image](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/2b5c1741-0ed4-415d-ba70-f4c2217b30f2)
+
 
 <br>
 <br>
