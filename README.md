@@ -64,13 +64,20 @@ https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 
 ### 과제 4. 게시글 목록을 조회하는 엔드포인트
 
+[POST] /api/v1/posts?page={page}&pageSize={pageSize}
+```
+(request) header - Authorization : Bearer + token
+      	  param - title, content
+(response) body - result
+```
+
 ### 과제 5. 특정 게시글을 조회하는 엔드포인트
 
 [GET] /api/v1/posts/{id}
 ```
 (request) header - Authorization : Bearer + token 
-	  param - id (postId)
-(response) body - postId, title, content, email
+	  param - page, pageSize
+(response) body - postId, title, content, email, createdDt, updatedDt, pageNo, pageSize, totalElements, totalPages, last
 ```
 
 ### 과제 6. 특정 게시글을 수정하는 엔드포인트
