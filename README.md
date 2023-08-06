@@ -21,6 +21,11 @@
 출처 : https://devfoxstar.github.io/java/springboot-docker-ec2-deploy/
 
 ## 3. 데이터베이스 테이블 구조
+
+ERD : https://www.erdcloud.com/d/jaovFfbASuZswL8FX
+
+![image](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/2ffc34ea-aea5-4fb9-b6fa-cd42c8b4fe03)
+
 <br>
 <br>
 
