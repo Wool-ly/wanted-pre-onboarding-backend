@@ -54,12 +54,12 @@ public class PostController {
     // 과제 4. 게시글 목록을 조회하는 엔드포인트
     @ApiOperation(value = "게시글 목록 조회")
     @GetMapping
-    public ResponseEntity<List<PagingPostResponse>> selectPostList(@RequestParam(defaultValue = "5", required = false) Integer pageSize,
+    public ResponseEntity<List<PagingPostResponse>> getPostList(@RequestParam(defaultValue = "5", required = false) Integer pageSize,
             @RequestParam(defaultValue = "0", required = false) Integer page) throws Exception {
 
         Pageable paging  = PageRequest.of(page, pageSize);
 
-        List<PagingPostResponse> PagingPostResponse = postService.selectPostList(paging);
+        List<PagingPostResponse> PagingPostResponse = postService.getPostList(paging);
 
         return new ResponseEntity<>(PagingPostResponse, HttpStatus.CREATED);
     }
