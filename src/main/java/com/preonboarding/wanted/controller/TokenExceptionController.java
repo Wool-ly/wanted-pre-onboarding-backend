@@ -10,7 +10,7 @@ public class TokenExceptionController {
 
     @GetMapping("/exception/entrypoint")
     public void entryPoint() {
-        throw new CustomException(ErrorCode.SERVER_ERROR);
+        throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/exception/access")

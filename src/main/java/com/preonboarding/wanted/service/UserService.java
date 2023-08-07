@@ -86,7 +86,7 @@ public class UserService {
                     .result("로그인에 성공하였습니다.  ")
                     .build();
         } catch (CustomException ex){
-            throw new CustomException(ErrorCode.SERVER_ERROR);
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
