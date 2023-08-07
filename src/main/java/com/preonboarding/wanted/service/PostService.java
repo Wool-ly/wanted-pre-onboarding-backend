@@ -56,7 +56,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PagingPostResponse> selectPostList(Pageable paging) {
+    public List<PagingPostResponse> getPostList(Pageable paging) {
 
         Iterable<Post> posts = postRepository.findAll(paging);
         List<PagingPostResponse> postResponses = new ArrayList<>();
