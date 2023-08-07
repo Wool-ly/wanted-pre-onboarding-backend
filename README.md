@@ -8,16 +8,28 @@
 <br>
 
 ### [도커 환경에서 git clone하는 경우]
-도커 환경에서 
-1) git clone https://github.com/Wool-ly/wanted-pre-onboarding-backend.git
+도커 환경이 준비되어 있다는 가정하에
+<br>
+**1) git clone https://github.com/Wool-ly/wanted-pre-onboarding-backend.git**
+<br>
    - 원격지의 repository를 가져옵니다.
-3) docker pull woollly/wanted_backend_server:1.0
+<br>
+
+**2) docker pull woollly/wanted_backend_server:1.0**
+<br>
    - docker hub에 업로드해둔 이미지를 pull을 통해 다운받습니다.
-5) cd wanted-pre-onboarding-backend
+<br>
+
+**3) cd wanted-pre-onboarding-backend**
+<br>     
    - wanted-pre-onboarding-backend 디렉토리 경로로 이동합니다.
-7) docker-compose up -d
+<br>
+
+**4) docker-compose up -d**
+<br>
    - docker-compose.yml에는 애플리케이션 실행을 위한 Springboot Server 컨테이너와 MySQL DB 컨테이너를 정의하였습니다.
    - docker-compose 명령어를 통해 컨테이너들 생성하여 백그라운드에서 실행합니다.
+<br>
 
 ### [배포된 서버 URL을 통해 Postman으로 호출하는 경우]
 
