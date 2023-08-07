@@ -59,12 +59,11 @@ https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 <br>
 
 
-## 2-1. docker compose + AWS 클라우드 배포
+## 2-1. docker compose + AWS 클라우드 배포 환경 구조
 
-배포 서버 URL
-http://3.37.214.129:8080/
+1) API 배포 서버 URL : http://3.37.214.129:8080/
 
-시스템 흐름도
+2) 시스템 흐름도
 ![image](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/925d9f16-bf82-4ee2-8428-cbbae97adaec)
 
 
