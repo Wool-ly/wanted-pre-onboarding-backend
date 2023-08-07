@@ -1,11 +1,14 @@
-version: "3"
+version: "3.8"
 services:
   wantedDB:
     container_name: wantedDB
-    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    image: mysql:8.0.34
     restart: always
     volumes:
-      - mysql_volume:/mysql/data:/var/lib/mysql
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
+      - ./initdb.d:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=root1234!
       - MYSQL_DATABASE=wanted
@@ -32,7 +35,7 @@ services:
       wantedDB:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://wantedDB:3306/wanted?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://wantedDB:3306/wanted?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
 networks:
   wanted-network:
     driver: bridge
