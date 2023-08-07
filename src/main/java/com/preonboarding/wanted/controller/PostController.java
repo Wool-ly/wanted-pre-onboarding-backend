@@ -8,7 +8,6 @@ import com.preonboarding.wanted.dto.response.PagingPostResponse;
 import com.preonboarding.wanted.dto.response.SavePostResponse;
 import com.preonboarding.wanted.dto.response.UpdatePostResponse;
 import com.preonboarding.wanted.service.PostService;
-import com.preonboarding.wanted.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.security.Principal;
@@ -35,11 +34,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Api(value = "게시판 관리")
-@RequestMapping("/api/v1/posts")
+@RequestMapping(value ="/api/v1/posts")
 public class PostController {
 
     private final PostService postService;
-    private final UserService userService;
 
     // 과제 3. 새로운 게시글을 생성하는 엔드포인트
     @ApiOperation(value = "게시글 작성")

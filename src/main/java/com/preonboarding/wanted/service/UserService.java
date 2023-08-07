@@ -7,6 +7,7 @@ import com.preonboarding.wanted.dto.response.SignUpResponse;
 import com.preonboarding.wanted.entity.User;
 import com.preonboarding.wanted.entity.UserRole;
 import com.preonboarding.wanted.exception.CustomException;
+import com.preonboarding.wanted.exception.CustomJwtRuntimeException;
 import com.preonboarding.wanted.exception.ErrorCode;
 import com.preonboarding.wanted.repository.UserRepository;
 import com.preonboarding.wanted.security.JwtTokenProvider;
@@ -68,7 +69,6 @@ public class UserService {
     public LoginResponse userLogin(LoginRequest requestDto){
 
         try{
-
             User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
                     () -> new CustomException(ErrorCode.INPUT_VALUE_INVALID)
             );
@@ -86,7 +86,7 @@ public class UserService {
                     .result("로그인에 성공하였습니다.  ")
                     .build();
         } catch (CustomException ex){
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+            throw new CustomJwtRuntimeException(ex);
         }
     }
 

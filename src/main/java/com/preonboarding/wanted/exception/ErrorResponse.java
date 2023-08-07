@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
@@ -20,7 +21,15 @@ public class ErrorResponse {
     private String message;
     private List<FieldError> errors;
 
-    private ErrorResponse(final ErrorCode code, final List<FieldError> errors) {
+    @Builder
+    private ErrorResponse(String message, int status, String code, List<FieldError> errors) {
+        this.message = message;
+        this.status = status;
+        this.code = code;
+        this.errors = errors;
+    }
+
+    public ErrorResponse(final ErrorCode code, final List<FieldError> errors) {
         this.status = code.getStatus();
         this.code = code.getCode();
         this.message = code.getMessage();
@@ -32,6 +41,12 @@ public class ErrorResponse {
         this.code = code.getCode();
         this.message = code.getMessage();
         this.errors = new ArrayList<>();
+    }
+
+    public ErrorResponse(int status, String code, String message) {
+        this.status = status;
+        this.code = code;
+        this.message = message;
     }
 
     public static ErrorResponse of(final ErrorCode code, final BindingResult bindingResult) {
