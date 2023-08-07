@@ -7,6 +7,7 @@ import com.preonboarding.wanted.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -52,6 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
             .authorizeRequests()
             .antMatchers("/api/v1/users/signUp/**").permitAll()
             .antMatchers("/api/v1/users/login/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/posts/{id}").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/posts").permitAll()
             .antMatchers("/exception/**").permitAll()
             .antMatchers("/swagger-ui/**").permitAll()
             .antMatchers("/swagger-resources/**").permitAll()
