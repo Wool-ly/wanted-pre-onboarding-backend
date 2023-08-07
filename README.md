@@ -53,9 +53,11 @@ https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 http://3.37.214.129:8080/
 
 시스템 흐름도
-![docker-workflow-steps](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/09eee86e-7c66-44f7-acba-fa31e70eec16)
+![image](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/925d9f16-bf82-4ee2-8428-cbbae97adaec)
 
-출처 : https://devfoxstar.github.io/java/springboot-docker-ec2-deploy/
+
+
+참고 : https://devfoxstar.github.io/java/springboot-docker-ec2-deploy/
 
 ## 3. 데이터베이스 테이블 구조
 
