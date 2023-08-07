@@ -29,12 +29,19 @@ https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 
 1) 포스트맨 API 명세서를 참고하여 Postman을 통해 과제별 엔드포인트를 호출합니다.
 2) 실제 호출 URL 예시
+   <br>
    회원가입 : [POST] http://3.37.214.129:8080/api/v1/users/signUp
+   <br>
    로그인 : [POST] http://3.37.214.129:8080/api/v1/users/login
+   <br>
    게시글 생성 : [POST] http://3.37.214.129:8080/api/v1/posts
+   <br>
    게시글 목록 조회 : [GET] http://3.37.214.129:8080/api/v1/posts?page=0&pageSize=10
+   <br>
    특정 게시글 상세 조회 :  [GET] http://3.37.214.129:8080/api/v1/posts/1
+   <br>
    게시글 수정 : [PATCH] http://3.37.214.129:8080/api/v1/posts/1
+   <br>
    게시글 삭제 : [DELETE] http://3.37.214.129:8080/api/v1/posts/1
 <br>
 <br>
