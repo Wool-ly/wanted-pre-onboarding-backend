@@ -7,8 +7,35 @@
 ## 2. 애플리케이션의 실행 방법 (엔드포인트 호출 방법 포함)
 <br>
 
+### [도커 환경에서 git clone하는 경우]
+도커 환경에서 
+1) git clone https://github.com/Wool-ly/wanted-pre-onboarding-backend.git
+   - 원격지의 repository를 가져옵니다.
+3) docker pull woollly/wanted_backend_server:1.0
+   - docker hub에 업로드해둔 이미지를 pull을 통해 다운받습니다.
+5) cd wanted-pre-onboarding-backend
+   - wanted-pre-onboarding-backend 디렉토리 경로로 이동합니다.
+7) docker-compose up -d
+   - docker-compose.yml에는 애플리케이션 실행을 위한 Springboot Server 컨테이너와 MySQL DB 컨테이너를 정의하였습니다.
+   - docker-compose 명령어를 통해 컨테이너들 생성하여 백그라운드에서 실행합니다.
 
+### [배포된 서버 URL을 통해 Postman으로 호출하는 경우]
 
+배포 서버 URL
+http://3.37.214.129:8080/
+
+포스트맨 API 명세서
+https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
+
+1) 포스트맨 API 명세서를 참고하여 Postman을 통해 과제별 엔드포인트를 호출합니다.
+2) 실제 호출 URL 예시
+   회원가입 : [POST] http://3.37.214.129:8080/api/v1/users/signUp
+   로그인 : [POST] http://3.37.214.129:8080/api/v1/users/login
+   게시글 생성 : [POST] http://3.37.214.129:8080/api/v1/posts
+   게시글 목록 조회 : [GET] http://3.37.214.129:8080/api/v1/posts?page=0&pageSize=10
+   특정 게시글 상세 조회 :  [GET] http://3.37.214.129:8080/api/v1/posts/1
+   게시글 수정 : [PATCH] http://3.37.214.129:8080/api/v1/posts/1
+   게시글 삭제 : [DELETE] http://3.37.214.129:8080/api/v1/posts/1
 <br>
 <br>
 
