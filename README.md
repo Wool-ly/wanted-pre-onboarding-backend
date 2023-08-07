@@ -8,36 +8,35 @@
 <br>
 
 ### [도커 환경에서 git clone하는 경우]
-도커 환경이 준비되어 있다는 가정하에
+도커 환경이 준비되어 있다는 가정하에 작성하겠습니다.
+<br>
 <br>
 **1) git clone https://github.com/Wool-ly/wanted-pre-onboarding-backend.git**
 <br>
-   - 원격지의 repository를 가져옵니다.
+   - 원격지의 프로젝트 repository를 가져옵니다.
 <br>
 
 **2) docker pull woollly/wanted_backend_server:1.0**
 <br>
-   - docker hub에 업로드해둔 이미지를 pull을 통해 다운받습니다.
+   - 제가 docker hub에 업로드해둔 이미지를 pull을 통해 다운받습니다.
 <br>
 
 **3) cd wanted-pre-onboarding-backend**
 <br>     
-   - wanted-pre-onboarding-backend 디렉토리 경로로 이동합니다.
+   - git clone으로 내려받은 wanted-pre-onboarding-backend 디렉토리 경로로 이동합니다.
 <br>
 
 **4) docker-compose up -d**
 <br>
-   - docker-compose.yml에는 애플리케이션 실행을 위한 Springboot Server 컨테이너와 MySQL DB 컨테이너를 정의하였습니다.
+   - docker-compose.yml에 애플리케이션 실행을 위한 Springboot Server 컨테이너와 MySQL DB 컨테이너를 정의하였습니다.
    - docker-compose 명령어를 통해 컨테이너들 생성하여 백그라운드에서 실행합니다.
 <br>
 
 ### [배포된 서버 URL을 통해 Postman으로 호출하는 경우]
 
-배포 서버 URL
-http://3.37.214.129:8080/
+API 배포 서버 URL : http://3.37.214.129:8080/
 
-포스트맨 API 명세서
-https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
+포스트맨 API 명세서 : https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 
 1) 포스트맨 API 명세서를 참고하여 Postman을 통해 과제별 엔드포인트를 호출합니다.
 2) 실제 호출 URL 예시
