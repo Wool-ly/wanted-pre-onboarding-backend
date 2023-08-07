@@ -15,6 +15,9 @@
 
 ## 2-1. docker compose + AWS 클라우드 배포
 
+배포 서버 URL
+http://3.37.214.129:8080/
+
 시스템 흐름도
 ![docker-workflow-steps](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/09eee86e-7c66-44f7-acba-fa31e70eec16)
 
