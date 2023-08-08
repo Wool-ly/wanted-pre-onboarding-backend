@@ -65,9 +65,10 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
         log.info("handleRuntimeException", e);
         ErrorResponse response = ErrorResponse.builder()
-                .code("test")
+                .code(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                 .message(e.getMessage())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .errors(null)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -76,9 +77,10 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleCustomAuthenticationException(CustomAuthenticationException e) {
         log.info("handleCustomAuthenticationException", e);
         ErrorResponse response = ErrorResponse.builder()
-                .code(ErrorCode.AUTHENTICATION_FAILED.getCode())
+                .code(ErrorCode.USER_AUTHENTICATION_FAILED.getCode())
                 .message(e.getMessage())
-                .status(ErrorCode.AUTHENTICATION_FAILED.getStatus())
+                .status(ErrorCode.USER_AUTHENTICATION_FAILED.getStatus())
+                .errors(null)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
@@ -90,6 +92,7 @@ public class GlobalExceptionHandler {
                 .code(ErrorCode.LOGIN_FAILED.getCode())
                 .message(e.getMessage())
                 .status(ErrorCode.LOGIN_FAILED.getStatus())
+                .errors(null)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
@@ -98,9 +101,10 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleJwtException(CustomJwtRuntimeException e) {
         log.info("handleJwtException", e);
         ErrorResponse response = ErrorResponse.builder()
-                .code(ErrorCode.INVALID_JWT_TOKEN.getCode())
-                .message(ErrorCode.INVALID_JWT_TOKEN.getMessage())
-                .status(ErrorCode.INVALID_JWT_TOKEN.getStatus())
+                .code(ErrorCode.LOGIN_FAILED.getCode())
+                .message(e.getMessage())
+                .status(ErrorCode.LOGIN_FAILED.getStatus())
+                .errors(null)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
