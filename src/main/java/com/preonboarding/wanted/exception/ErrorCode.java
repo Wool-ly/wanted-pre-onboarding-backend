@@ -63,7 +63,7 @@ public enum ErrorCode {
     POST_LIST_FETCH_ERROR(400, "CM_024", "게시글 목록 조회 중 오류가 발생했습니다."),
     POST_NOT_FOUND(400, "CM_025", "해당 게시글이 존재하지 않습니다."),
     UNAUTHORIZED_UPDATE(400, "CM_026", "게시글 수정 권한이 없습니다."),
-    UNAUTHORIZED_DELETE(400, "CM_027", "게시글 수정 권한이 없습니다."),
+    UNAUTHORIZED_DELETE(400, "CM_027", "게시글 삭제 권한이 없습니다."),
     EMPTY_POST_LIST(400, "CM_028", "게시글 목록이 비어 있습니다."),
 
     // JWT AUTH
