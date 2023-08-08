@@ -11,12 +11,13 @@ import com.preonboarding.wanted.service.PostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.security.Principal;
-import java.util.List;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -52,14 +53,12 @@ public class PostController {
     // 과제 4. 게시글 목록을 조회하는 엔드포인트
     @ApiOperation(value = "게시글 목록 조회")
     @GetMapping
-    public ResponseEntity<List<PagingPostResponse>> getPostList(@RequestParam(defaultValue = "5", required = false) Integer pageSize,
+    public ResponseEntity<Page<PagingPostResponse>> getPostList(@RequestParam(defaultValue = "5", required = false) Integer pageSize,
             @RequestParam(defaultValue = "0", required = false) Integer page) throws Exception {
 
-        Pageable paging  = PageRequest.of(page, pageSize);
+        Pageable paging  = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC,"createdDt"));
 
-        List<PagingPostResponse> PagingPostResponse = postService.getPostList(paging);
-
-        return new ResponseEntity<>(PagingPostResponse, HttpStatus.CREATED);
+        return postService.getPostList(paging);
     }
 
 

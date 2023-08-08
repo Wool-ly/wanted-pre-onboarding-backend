@@ -9,15 +9,21 @@ import com.preonboarding.wanted.dto.response.SavePostResponse;
 import com.preonboarding.wanted.dto.response.UpdatePostResponse;
 import com.preonboarding.wanted.entity.Post;
 import com.preonboarding.wanted.entity.User;
+import com.preonboarding.wanted.exception.CustomException;
+import com.preonboarding.wanted.exception.ErrorCode;
 import com.preonboarding.wanted.repository.PostRepository;
 import com.preonboarding.wanted.repository.UserRepository;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -35,100 +41,162 @@ public class PostService {
     @Transactional
     public SavePostResponse savePost(SavePostRequest requestDto) {
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userEmail = ((UserDetails) principal).getUsername();
-        Optional<User> userEntity = userRepository.findByEmail(userEmail);
+        try{
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (!(principal instanceof UserDetails)) {
+                return SavePostResponse.builder()
+                        .result("인증되지 않은 사용자입니다.")
+                        .build();
+            }
+            String userEmail = ((UserDetails) principal).getUsername();
+            Optional<User> userEntity = userRepository.findByEmail(userEmail);
 
-        User user = new User();
-        user.setUserId(userEntity.get().getUserId());
+            if (userEntity.isEmpty()) {
+                return SavePostResponse.builder()
+                        .result("사용자 정보를 찾을 수 없습니다.")
+                        .build();
+            }
 
-        Post post = new Post();
-        post.setTitle(requestDto.getTitle());
-        post.setContent(requestDto.getContent());
-        post.setUser(user);
+            User user = new User();
+            user.setUserId(userEntity.get().getUserId());
 
-        postRepository.save(post);
+            Post post = new Post();
+            post.setTitle(requestDto.getTitle());
+            post.setContent(requestDto.getContent());
+            post.setUser(user);
 
-        return SavePostResponse
-                .builder()
-                .result("게시글 작성이 완료되었습니다.")
-                .build();
+            postRepository.save(post);
+
+            return SavePostResponse
+                    .builder()
+                    .result("게시글 작성이 완료되었습니다.")
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return SavePostResponse.builder()
+            .result("게시글 작성 중 오류가 발생했습니다.")
+            .build();
+        }
     }
 
     @Transactional(readOnly = true)
-    public List<PagingPostResponse> getPostList(Pageable paging) {
+    public ResponseEntity<Page<PagingPostResponse>> getPostList(Pageable paging) {
 
-        Iterable<Post> posts = postRepository.findAll(paging);
-        List<PagingPostResponse> postResponses = new ArrayList<>();
+        try {
+            Page<Post> postsPage = postRepository.findAll(paging);
+            List<PagingPostResponse> postResponses = new ArrayList<>();
 
-        posts.forEach(post -> postResponses.add(
-                PagingPostResponse
-                        .builder()
-                        .postId(post.getPostId())
-                        .email(post.getUser().getEmail())
-                        .title(post.getTitle())
-                        .content(post.getContent())
-                        .createdDt(post.getCreatedDt())
-                        .updatedDt(post.getUpdatedDt())
-                        .build())
-                );
-        return postResponses;
+            postsPage.getContent().forEach(post -> postResponses.add(
+                    PagingPostResponse
+                            .builder()
+                            .postId(post.getPostId())
+                            .email(post.getUser().getEmail())
+                            .title(post.getTitle())
+                            .content(post.getContent())
+                            .createdDt(post.getCreatedDt())
+                            .updatedDt(post.getUpdatedDt())
+                            .build())
+            );
+
+            if (postResponses.isEmpty()) {
+                // content가 비어있는 경우 메시지만 반환
+                return ResponseEntity.ok(new PageImpl<>(Collections.emptyList(), paging, 0));
+            }
+
+            return ResponseEntity.ok(new PageImpl<>(postResponses, paging, postsPage.getTotalElements()));
+        } catch (CustomException e) {
+            log.error("게시글 목록을 조회할 때 오류가 발생했습니다.", e);
+            throw new CustomException(ErrorCode.POST_LIST_FETCH_ERROR);
+        }
     }
 
     @Transactional
     public UpdatePostResponse updatePost(Long postId, UpdatePostRequest requestDto, Principal principal) {
+        try {
+            Optional<Post> findPost = postRepository.findById(postId);
 
-        Optional<Post> findPost = postRepository.findById(postId);
+            if (findPost.isEmpty()) {
+                throw new CustomException(ErrorCode.POST_NOT_FOUND);
+            }
 
-        if(findPost.get().getUser().getEmail().equals(principal.getName())) {
+            Post post = findPost.get();
 
-            Post post = findPost.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+            if (!post.getUser().getEmail().equals(principal.getName())) {
+                throw new CustomException(ErrorCode.UNAUTHORIZED_UPDATE);
+            }
+
             post.setTitle(requestDto.getTitle());
             post.setContent(requestDto.getContent());
 
-            return UpdatePostResponse
-                    .builder()
+            return UpdatePostResponse.builder()
                     .result("게시글 수정이 완료되었습니다.")
                     .build();
-        } else  {
+        } catch (CustomException e) {
             return UpdatePostResponse
                     .builder()
-                    .result("게시글 수정 권한이 없습니다.")
+                    .result(e.getErrorCode().getMessage())
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return UpdatePostResponse.builder()
+                    .result("게시글 수정 중 오류가 발생했습니다.")
                     .build();
         }
-
     }
 
     @Transactional
     public DeletePostResponse deletePost(Long postId, Principal principal) {
+        try {
+            Optional<Post> findPost = postRepository.findById(postId);
 
-        Optional<Post> findPost = postRepository.findById(postId);
+            if (findPost.isEmpty()) {
+                throw new CustomException(ErrorCode.POST_NOT_FOUND);
+            }
 
-        if(findPost.get().getUser().getEmail().equals(principal.getName())) {
+            Post post = findPost.get();
 
-            Post post = findPost.orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+            if (!post.getUser().getEmail().equals(principal.getName())) {
+                throw new CustomException(ErrorCode.UNAUTHORIZED_DELETE);
+            }
+
             postRepository.delete(post);
 
-            return DeletePostResponse
-                    .builder()
+            return DeletePostResponse.builder()
                     .result("게시글 삭제가 완료되었습니다.")
                     .build();
-        } else  {
+        } catch (CustomException e) {
             return DeletePostResponse
                     .builder()
-                    .result("게시글 삭제 권한이 없습니다.")
+                    .result(e.getErrorCode().getMessage())
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DeletePostResponse
+                    .builder()
+                    .result("게시글 삭제 중 오류가 발생했습니다.")
                     .build();
         }
-
     }
 
     @Transactional(readOnly = true)
     public GetPostResponse getPost(Long postId) {
+        try {
+            Post entity = postRepository.findById(postId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        Post entity = postRepository.findById(postId).orElseThrow(()
-        -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + postId));
-
-        return new GetPostResponse(entity);
+            return new GetPostResponse(entity);
+        } catch (CustomException e) {
+            return GetPostResponse
+                    .builder()
+                    .result(e.getErrorCode().getMessage())
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return GetPostResponse
+                    .builder()
+                    .result("게시글 조회 중 오류가 발생했습니다.")
+                    .build();
+        }
     }
 
 }

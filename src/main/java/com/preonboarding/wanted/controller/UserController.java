@@ -39,7 +39,7 @@ public class UserController {
     @ApiOperation(value = "로그인")
     @PostMapping(value = "/login")
     public ResponseEntity<LoginResponse> userLogin(
-            @Valid @RequestBody LoginRequest requestDto){
+            @Valid @RequestBody LoginRequest requestDto) {
         LoginResponse response = userService.userLogin(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
