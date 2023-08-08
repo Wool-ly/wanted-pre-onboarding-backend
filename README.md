@@ -56,6 +56,51 @@ API 배포 서버 URL : http://3.37.214.129:8080/
    게시글 삭제 : [DELETE] http://3.37.214.129:8080/api/v1/posts/1
 <br>
 <br>
+3) 각 엔드포인트 별 성공/실패에 따른 Response 시나리오는 포스트맨 API 명세서에서 자세히 확인할 수 있습니다.
+  <br>
+   <br>
+   
+   ![image](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/b474026c-2e80-401f-a98d-0a6a0171bea3)
+   
+   <br>
+
+   **ex) 회원가입에 성공한 경우**
+   ```
+	{
+	  "result": "회원 가입이 완료되었습니다."
+	}
+   ```
+
+   **ex) 회원가입 시 이메일 유효성 검사에 실패한 경우**
+   ```
+	{
+	  "status": 400,
+	  "code": "CM_001",
+	  "message": "입력값이 올바르지 않습니다.",
+	  "errors": [
+	    {
+	      "field": "email",
+	      "value": "test",
+	      "reason": "이메일 형식에 맞지 않습니다. '@'를 포함하여 입력해주세요."
+	    }
+	  ]
+	}
+   ```
+   **ex) 회원가입 시 비밀번 유효성 검사에 실패한 경우**
+   ```
+	{
+	  "status": 400,
+	  "code": "CM_001",
+	  "message": "입력값이 올바르지 않습니다.",
+	  "errors": [
+	    {
+	      "field": "password",
+	      "value": "test123",
+	      "reason": "비밀번호는 8자 이상이어야 합니다."
+	    }
+	  ]
+	}
+   ```
 
 
 ## 2-1. docker compose + AWS 클라우드 배포 환경 구조
@@ -226,10 +271,11 @@ ERD : https://www.erdcloud.com/d/LrrABe7xF5vR6TSDF
 
 4-1) 사용자에서 페이지 번호(page), 페이지당 게시글 수(pageSize)를 요청 파라미터로 입력하여 **GET** 요청을 보냅니다.
 
-4-2) 서버에서는 데이터베이스에서 페이징 정보(paging)에 맞는 모든 게시글 목록을 조회합니다.
+4-2) 서버에서는 데이터베이스에서 인터페이스인 'Pageable'을 활용하여 페이징 정보(paging)에 맞는 모든 게시글 목록을 조회합니다.
 - Spring Framework에서 페이징 처리를 위해 사용되는 인터페이스인 'Pageable'을 활용했습니다.
+- 페이지 번호(page)는 0부터, 페이지당 게시글 수(pageSize)는 10, 정렬은 createdDt(생성일자)를 기준으로 내림차순으로 정렬합니다.
 
-4-3) 사용자에게 게시글 ID(postId), 작성자 이메일(email), 게시글 제목(title), 게시글 내용(content), 게시글 생성일자(createdDt), 게시글 수정 일자(updatedDt)와  Pageable 인터페이스의 페이지 번호(pageNo), 페이지당 게시글 수 (pageSize), 전체 데이터 개수(totalElements), 총 페이지 수(totalPages), 마지막 페이지 여부(last)를 응답으로 전달합니다.
+4-3) 사용자에게 게시글 ID(postId), 작성자 이메일(email), 게시글 제목(title), 게시글 내용(content), 게시글 생성일자(createdDt), 게시글 수정 일자(updatedDt)와  Pageable 인터페이스의 페이지 번호(pageNumber), 페이지당 게시글 수 (pageSize), 전체 데이터 개수(totalElements), 총 페이지 수(totalPages), 마지막 페이지 여부(last) 등을 포함하여 응답으로 전달합니다.
 
 
 ### 과제 5. 특정 게시글을 조회하는 엔드포인트
