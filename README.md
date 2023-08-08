@@ -214,6 +214,40 @@ ERD : https://www.erdcloud.com/d/LrrABe7xF5vR6TSDF
 <br>
 
 ## 4. 구현한 API의 동작을 촬영한 데모 영상 링크
+
+유튜브 재생목록 링크 : https://www.youtube.com/playlist?list=PLtGWIYp0BHaKhWW3oK28wWTBfuzB0q8MM
+
+#### #과제 1. 사용자 회원가입 엔드포인트
+![1  signUp](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/9bbd2f75-032c-4ded-9b5c-b83cc984a051)
+
+#### #과제 2. 사용자 로그인 엔드포인트
+![2  login](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/80372e36-a416-4bdf-a5da-f886f00d9970)
+
+
+#### #과제 3. 새로운 게시글을 생성하는 엔드포인트
+
+
+#### #과제 4. 게시글 목록을 조회하는 엔드포인트
+![4  getPostList](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/c5357baa-7700-49ba-96c9-550bc2dc982e)
+
+
+#### #과제 5. 특정 게시글을 조회하는 엔드포인트
+![5  getPost](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/8bf6d216-e0da-4842-bdc9-4bfe566889e8)
+
+
+#### #과제 6. 특정 게시글을 수정하는 엔드포인트
+![6  updatePost](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/4eef4e00-d464-4205-9521-df723a45c095)
+
+
+#### #과제 7. 특정 게시글을 삭제하는 엔드포인트
+![7  deletePost](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/e2a6b31d-98a8-4985-bf77-c0f22b592dc9)
+
+
+
+#과제 엔드포인트 호출 후 DB 저장 확인 
+![DB 저장_wanted_aws_docker](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/c3faf34c-3b9b-482a-8346-f27219db7d7f)
+
+
 <br>
 <br>
 
