@@ -56,14 +56,28 @@ public enum ErrorCode {
     // 서버가 처리 할 방법을 모르는 경우 발생
     INTERNAL_SERVER_ERROR(500, "CM_022", "서버 내부에서 오류가 발생했습니다."),
 
-    // Auth,
-    AUTHENTICATION_FAILED(401, "A_001", "Security Context에 인증 정보가 없습니다."),
-    LOGIN_FAILED(401, "A_001", "로그인에 실패하였습니다."),
-    WRONG_TYPE_TOKEN(401, "A_003", "잘못된 타입의 토큰입니다."),
-    EXPIRED_TOKEN(401, "A_004", "만료된 토큰입니다."),
-    INVALID_JWT_TOKEN(401, "AUTH003", "유효하지 않은 토큰입니다."),
-    UNSUPPORTED_TOKEN(400, "A_005", "지원되지 않는 토큰입니다."),
-    UNKNOWN_ERROR(400, "A_006", "알 수 없는 오류입니다."),
+    
+    INVALID_PASSWORD(400, "CM_023", "비밀번호가 일치하지 않습니다."),
+    
+    // 게시글 관련
+    POST_LIST_FETCH_ERROR(400, "CM_024","게시글 목록 조회 중 오류가 발생했습니다."),
+    POST_NOT_FOUND(400, "CM_025","해당 게시글이 존재하지 않습니다."),
+    UNAUTHORIZED_UPDATE(400, "CM_026","게시글 수정 권한이 없습니다."),
+    UNAUTHORIZED_DELETE(400, "CM_027","게시글 수정 권한이 없습니다."),
+
+    // JWT AUTH
+    EXPIRED_TOKEN(401, "AUTH_001", "토큰이 만료되었습니다. 다시 로그인 해주세요."),
+    INVALID_TOKEN(401, "AUTH_002", "유효하지 않은 토큰입니다."),
+    MALFORMED_TOKEN(401, "AUTH_003", "형식이 잘못된 토큰입니다."),
+    MISSING_TOKEN(401, "AUTH_004", "토큰이 누락되었습니다. 완전한 형태로 다시 입력해주세요."),
+    REVOKED_TOKEN(401, "AUTH_005", "취소된 토큰입니다."),
+    UNSUPPORTED_TOKEN(400, "AUTH_006", "지원되지 않는 형식의 토큰입니다."),
+    TOKEN_NOT_FOUND(404, "AUTH_007", "토큰을 찾을 수 없습니다."),
+    USER_AUTHENTICATION_FAILED(401, "AUTH_008", "사용자 인증에 실패하였습니다."),
+    TOKEN_REFRESH_FAILED(400, "AUTH_009", "토큰 갱신에 실패하였습니다."),
+    UNKNOWN_ERROR(400, "AUTH_010", "알 수 없는 오류입니다."),
+    PERMISSION_DENIED(403, "AUTH_011", "접근 권한이 없습니다."),
+    LOGIN_FAILED(401, "AUTH_008", "로그인에 실패하였습니다."),
 
     /**
      * ******************************* Custom Error CodeList ***************************************
@@ -75,7 +89,8 @@ public enum ErrorCode {
     UPDATE_ERROR(200, "9999", "Update 트랜잭션 오류입니다."),
 
     // Transaction Delete Error
-    DELETE_ERROR(200, "9999", "Delete 트랜잭션 오류입니다.");
+    DELETE_ERROR(200, "9999", "Delete 트랜잭션 오류입니다.")
+
 
     ; // End
 

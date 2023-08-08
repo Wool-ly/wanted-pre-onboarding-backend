@@ -1,5 +1,7 @@
 package com.preonboarding.wanted.config;
 
+import com.preonboarding.wanted.security.CustomAccessDeniedHandler;
+import com.preonboarding.wanted.security.JwtAuthenticationEntryPoint;
 import com.preonboarding.wanted.security.JwtAuthenticationFilter;
 import com.preonboarding.wanted.security.JwtExceptionFilter;
 import com.preonboarding.wanted.security.JwtTokenProvider;
@@ -23,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtExceptionFilter jwtExceptionFilter;
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -66,12 +69,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
             .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
         //JwtAuthentication exception handling
-        //http
-            //.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+        http
+            .exceptionHandling().authenticationEntryPoint(new JwtAuthenticationEntryPoint());
 
         //access Denial handler
-        //http
-            //.exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler());
+        http
+            .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler());
 
     }
 

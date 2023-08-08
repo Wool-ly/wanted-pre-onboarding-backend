@@ -1,5 +1,7 @@
 package com.preonboarding.wanted.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +21,8 @@ public class ErrorResponse {
     private int status;
     private String code;
     private String message;
+
+    @JsonInclude(Include.NON_NULL)
     private List<FieldError> errors;
 
     @Builder
@@ -74,7 +78,6 @@ public class ErrorResponse {
         final List<FieldError> errors = FieldError.of(e.getName(), value, e.getErrorCode());
         return new ErrorResponse(ErrorCode.INVALID_TYPE_VALUE, errors);
     }
-
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
