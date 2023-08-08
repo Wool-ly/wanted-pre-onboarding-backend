@@ -225,6 +225,7 @@ ERD : https://www.erdcloud.com/d/LrrABe7xF5vR6TSDF
 
 
 #### #과제 3. 새로운 게시글을 생성하는 엔드포인트
+![3](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/a6e04ce7-a41a-4f1a-9c69-2082d3d3be15)
 
 
 #### #과제 4. 게시글 목록을 조회하는 엔드포인트
@@ -244,7 +245,7 @@ ERD : https://www.erdcloud.com/d/LrrABe7xF5vR6TSDF
 
 
 
-#과제 엔드포인트 호출 후 DB 저장 확인 
+#### #과제 엔드포인트 호출 후 DB 저장 확인 
 ![DB 저장_wanted_aws_docker](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/c3faf34c-3b9b-482a-8346-f27219db7d7f)
 
 
