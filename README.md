@@ -60,11 +60,100 @@ API 배포 서버 URL : http://3.37.214.129:8080/
 
 ## 2-1. docker compose + AWS 클라우드 배포 환경 구조
 
-1) API 배포 서버 URL : http://3.37.214.129:8080/
+#### 1) API 배포 서버 URL : http://3.37.214.129:8080/
 
-2) 시스템 흐름도
+#### 2) 시스템 흐름도
 ![image](https://github.com/Wool-ly/wanted-pre-onboarding-backend/assets/78457967/925d9f16-bf82-4ee2-8428-cbbae97adaec)
 
+#### 3) Dockerfile
+
+```
+FROM openjdk:17-jdk
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} wanted-0.0.1-SNAPSHOT.jar
+ENV    PROFILE dev
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "wanted-0.0.1-SNAPSHOT.jar"]
+```
+
+#### 4) docker-compose.yml
+
+```
+version: "3.8"
+services:
+  wantedDB:
+    container_name: wantedDB
+    command: --default-authentication-plugin=mysql_native_password
+    image: mysql:8.0.34
+    restart: always
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
+      - ./initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root1234!
+      - MYSQL_DATABASE=wanted
+      - MYSQL_USER=wanted
+      - MYSQL_PASSWORD=wanted1!
+    ports:
+      - "3306:3306"
+    networks:
+      - wanted-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+  wantedServer:
+    container_name: wantedServer
+    ports:
+      - "8080:8080"
+    image: woollly/wanted_backend_server:1.0
+    volumes:
+      - wanted_images:/app/wanted/images
+    networks:
+      - wanted-network
+    depends_on:
+      wantedDB:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://wantedDB:3306/wanted?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
+networks:
+  wanted-network:
+    driver: bridge
+volumes:
+  mysql_volume:
+    driver: local
+  wanted_images:
+    driver: local
+```
+
+
+#### 5) init.sql
+```
+CREATE TABLE wanted.users (
+   user_id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   email VARCHAR(100) NOT NULL,
+   password VARCHAR(100) NOT NULL,
+   role VARCHAR(100) NOT NULL,
+   created_dt DATETIME NOT NULL,
+   updated_dt DATETIME NULL DEFAULT NULL
+) DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB;
+
+CREATE TABLE wanted.posts (
+   post_id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   title VARCHAR(100) NOT NULL COMMENT '제목',
+   content VARCHAR(2000) NOT NULL COMMENT '내용',
+   user_id BIGINT(20) NOT NULL,
+   created_dt DATETIME NOT NULL,
+   updated_dt DATETIME NULL DEFAULT NULL
+) DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB;
+
+ALTER TABLE wanted.posts
+ADD CONSTRAINT fk_user_id
+FOREIGN KEY (user_id) REFERENCES users(user_id);
+
+```
+- Docker-Compose 에서 init.sql을 실행하여 wanted 데이터베이스에 users 테이블과 posts 테이블을 생성합니다.
+- ``./initdb.d:/docker-entrypoint-initdb.d``
 
 
 참고 : https://devfoxstar.github.io/java/springboot-docker-ec2-deploy/
