@@ -364,7 +364,7 @@ https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 
 **[POST] /api/v1/posts**
 ```
-(request) header - Authorization : Bearer + token
+(request) header - Authorization : Bearer + accessToken
       	  body - title, content
 (response) body - result
 ```
@@ -374,7 +374,7 @@ https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 **[GET] /api/v1/posts?page={page}&pageSize={pageSize}**
 ```
 (request) param - page, pageSize
-(response) body - postId, title, content, email, createdDt, updatedDt, pageNo, pageSize, totalElements, totalPages, last
+(response) body - postId, title, content, email, createdDt, updatedDt & Pageable(pageNumber, pageSize, totalElements, totalPages, last and so on) 
 ```
 
 ### 과제 5. 특정 게시글을 조회하는 엔드포인트
@@ -389,7 +389,7 @@ https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 
 **[PATCH] /api/v1/posts/{id}**
 ```
-(request) header - Authorization : Bearer + token 
+(request) header - Authorization : Bearer + accessToken
 	  param - id (postId)
 	  body - title, content
 (response) body - result
@@ -401,7 +401,7 @@ https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 
 **[DELETE] /api/v1/posts/{id}**
 ```
-(request) header - Authorization : Bearer + token 
+(request) header - Authorization : Bearer + accessToken
 	  param - id (postId)
 (response) body - result
 ```
