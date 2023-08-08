@@ -22,7 +22,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    protected ResponseEntity<ErrorResponse> handleBadCredentialException(BadCredentialsException e) {
+    protected ResponseEntity<ErrorResponse> handleBadCredentialException(
+            BadCredentialsException e) {
         log.info("handleBadCredentialException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.BAD_CREDENTIALS);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -48,7 +49,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     protected ResponseEntity<ErrorResponse> handleBindException(BindException e) {
         log.info("handleBindException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.INPUT_VALUE_INVALID, e.getBindingResult());
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INPUT_VALUE_INVALID,
+                e.getBindingResult());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -74,7 +76,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CustomAuthenticationException.class)
-    protected ResponseEntity<ErrorResponse> handleCustomAuthenticationException(CustomAuthenticationException e) {
+    protected ResponseEntity<ErrorResponse> handleCustomAuthenticationException(
+            CustomAuthenticationException e) {
         log.info("handleCustomAuthenticationException", e);
         ErrorResponse response = ErrorResponse.builder()
                 .code(ErrorCode.USER_AUTHENTICATION_FAILED.getCode())

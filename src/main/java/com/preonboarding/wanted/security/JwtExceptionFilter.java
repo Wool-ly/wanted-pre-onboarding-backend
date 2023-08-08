@@ -22,35 +22,34 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+            FilterChain chain) throws ServletException, IOException {
         try {
             chain.doFilter(request, response);
         } catch (JwtException ex) {
             String message = ex.getMessage();
-            if(ErrorCode.UNKNOWN_ERROR.getMessage().equals(message)) {
+            if (ErrorCode.UNKNOWN_ERROR.getMessage().equals(message)) {
                 log.info("UNKNOWN_ERROR", ex);
                 setResponse(response, ErrorCode.UNKNOWN_ERROR);
             }
             //잘못된 타입의 토큰인 경우
-            else if(ErrorCode.MALFORMED_TOKEN.getMessage().equals(message)) {
+            else if (ErrorCode.MALFORMED_TOKEN.getMessage().equals(message)) {
                 log.info("WRONG_TYPE_TOKEN", ex);
                 setResponse(response, ErrorCode.MALFORMED_TOKEN);
             }
             //토큰 만료된 경우
-            else if(ErrorCode.EXPIRED_TOKEN.getMessage().equals(message)) {
+            else if (ErrorCode.EXPIRED_TOKEN.getMessage().equals(message)) {
                 log.info("EXPIRED_TOKEN", ex);
                 setResponse(response, ErrorCode.EXPIRED_TOKEN);
             }
             //지원되지 않는 토큰인 경우
-            else if(ErrorCode.UNSUPPORTED_TOKEN.getMessage().equals(message)) {
+            else if (ErrorCode.UNSUPPORTED_TOKEN.getMessage().equals(message)) {
                 log.info("UNSUPPORTED_TOKEN", ex);
                 setResponse(response, ErrorCode.UNSUPPORTED_TOKEN);
-            }
-            else if(ErrorCode.INTERNAL_SERVER_ERROR.getMessage().equals(message)) {
+            } else if (ErrorCode.INTERNAL_SERVER_ERROR.getMessage().equals(message)) {
                 log.info("INTERNAL_SERVER_ERROR", ex);
                 setResponse(response, ErrorCode.INTERNAL_SERVER_ERROR);
-            }
-            else {
+            } else {
                 log.info("ACCESS_DENIED", ex);
                 setResponse(response, ErrorCode.ACCESS_DENIED);
             }
@@ -58,13 +57,15 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         }
     }
 
-    private void setResponse(HttpServletResponse response, ErrorCode errorCode) throws RuntimeException, IOException {
+    private void setResponse(HttpServletResponse response, ErrorCode errorCode)
+            throws RuntimeException, IOException {
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(errorCode.getStatus());
 
         ErrorResponse errorResponse =
-                new ErrorResponse(errorCode.getStatus(), errorCode.getCode(), errorCode.getMessage());
+                new ErrorResponse(errorCode.getStatus(), errorCode.getCode(),
+                        errorCode.getMessage());
         String jsonResponse = objectMapper.writeValueAsString(errorResponse);
 
         response.getWriter().print(jsonResponse);

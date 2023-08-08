@@ -15,7 +15,8 @@ import org.springframework.stereotype.Component;
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
+    public void handle(HttpServletRequest request, HttpServletResponse response,
+            AccessDeniedException accessDeniedException)
             throws IOException, ServletException {
 
         ErrorCode exceptionCode;
@@ -24,7 +25,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     }
 
-    private void setResponse(HttpServletResponse response, ErrorCode exceptionCode) throws IOException {
+    private void setResponse(HttpServletResponse response, ErrorCode exceptionCode)
+            throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 

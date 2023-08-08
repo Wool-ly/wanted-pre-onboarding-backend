@@ -34,7 +34,7 @@ public class JwtTokenProvider {
     private String secretKey;
 
     //토큰 유효시간 설정
-    private long tokenValidTime = 1000L * 60 * 30; // 30분
+    private final long tokenValidTime = 1000L * 60 * 30; // 30분
 
     //secretkey를 미리 인코딩 해줌.
     @PostConstruct
@@ -60,7 +60,8 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT") //헤더
                 .setClaims(claims) // 페이로드
-                .signWith(SignatureAlgorithm.HS256, secretKey)  // 서명. 사용할 암호화 알고리즘과 signature 에 들어갈 secretKey 세팅
+                .signWith(SignatureAlgorithm.HS256,
+                        secretKey)  // 서명. 사용할 암호화 알고리즘과 signature 에 들어갈 secretKey 세팅
                 .compact();
     }
 
@@ -69,17 +70,18 @@ public class JwtTokenProvider {
 
         String bearerToken = request.getHeader("Authorization");
 
-        if (bearerToken == null || bearerToken.trim().isEmpty() || bearerToken.equals("Bearer") || bearerToken.equals("Bearer ")) {
+        if (bearerToken == null || bearerToken.trim().isEmpty() || bearerToken.equals("Bearer")
+                || bearerToken.equals("Bearer ")) {
             log.info("WRONG_BEARER_TOKEN");
             throw new JwtException(ErrorCode.MISSING_TOKEN.getMessage());
         }
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
-        }catch (SecurityException e) {
+        } catch (SecurityException e) {
             log.info("SignatureException");
             throw new JwtException(ErrorCode.MALFORMED_TOKEN.getMessage());
-        }catch (MalformedJwtException e) {
+        } catch (MalformedJwtException e) {
             log.info("MalformedJwtException");
             throw new JwtException(ErrorCode.MALFORMED_TOKEN.getMessage());
         } catch (ExpiredJwtException e) {
@@ -94,14 +96,16 @@ public class JwtTokenProvider {
     //JWT 토큰에서 인증정보 조회
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(getUserEmail(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "",
+                userDetails.getAuthorities());
     }
 
     // 토큰에서 회원 정보 추출
     public String getUserEmail(String token) {
         try {
-            return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("email");
-        } catch(ExpiredJwtException e) {
+            return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+                    .get("email");
+        } catch (ExpiredJwtException e) {
             return e.getClaims().getSubject();
         }
     }

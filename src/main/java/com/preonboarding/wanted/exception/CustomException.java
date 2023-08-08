@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class CustomException extends RuntimeException{
+public class CustomException extends RuntimeException {
+
     private ErrorCode errorCode;
     private String errorMessage; // 에러 메시지 추가
 

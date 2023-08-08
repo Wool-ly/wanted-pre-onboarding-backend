@@ -57,12 +57,14 @@ public class ErrorResponse {
         return new ErrorResponse(code, FieldError.of(bindingResult));
     }
 
-    public static ErrorResponse of(final ErrorCode code, final Set<ConstraintViolation<?>> constraintViolations) {
+    public static ErrorResponse of(final ErrorCode code,
+            final Set<ConstraintViolation<?>> constraintViolations) {
         return new ErrorResponse(code, FieldError.of(constraintViolations));
     }
 
     public static ErrorResponse of(final ErrorCode code, final String missingParameterName) {
-        return new ErrorResponse(code, FieldError.of(missingParameterName, "", "parameter must required"));
+        return new ErrorResponse(code,
+                FieldError.of(missingParameterName, "", "parameter must required"));
     }
 
     public static ErrorResponse of(final ErrorCode code) {
@@ -82,6 +84,7 @@ public class ErrorResponse {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FieldError {
+
         private String field;
         private String value;
         private String reason;
@@ -92,7 +95,8 @@ public class ErrorResponse {
             this.reason = reason;
         }
 
-        public static List<FieldError> of(final String field, final String value, final String reason) {
+        public static List<FieldError> of(final String field, final String value,
+                final String reason) {
             List<FieldError> fieldErrors = new ArrayList<>();
             fieldErrors.add(new FieldError(field, value, reason));
             return fieldErrors;
@@ -103,7 +107,8 @@ public class ErrorResponse {
             return fieldErrors.stream()
                     .map(error -> new FieldError(
                             error.getField(),
-                            error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
+                            error.getRejectedValue() == null ? ""
+                                    : error.getRejectedValue().toString(),
                             error.getDefaultMessage()
                     ))
                     .collect(Collectors.toList());

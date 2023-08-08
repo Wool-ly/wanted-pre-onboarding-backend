@@ -1,13 +1,13 @@
 package com.preonboarding.wanted.security;
 
 import com.preonboarding.wanted.entity.User;
+import java.util.Collection;
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.Collection;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
@@ -48,7 +48,8 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(user.getRole().toString());
+        List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(
+                user.getRole().toString());
         return authorityList;
     }
 }

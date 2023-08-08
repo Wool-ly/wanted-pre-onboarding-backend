@@ -41,8 +41,9 @@ public class PostService {
     @Transactional
     public SavePostResponse savePost(SavePostRequest requestDto) {
 
-        try{
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            Object principal = SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
             if (!(principal instanceof UserDetails)) {
                 return SavePostResponse.builder()
                         .result("인증되지 않은 사용자입니다.")
@@ -74,8 +75,8 @@ public class PostService {
         } catch (Exception e) {
             e.printStackTrace();
             return SavePostResponse.builder()
-            .result("게시글 작성 중 오류가 발생했습니다.")
-            .build();
+                    .result("게시글 작성 중 오류가 발생했습니다.")
+                    .build();
         }
     }
 
@@ -103,7 +104,8 @@ public class PostService {
                 return ResponseEntity.ok(new PageImpl<>(Collections.emptyList(), paging, 0));
             }
 
-            return ResponseEntity.ok(new PageImpl<>(postResponses, paging, postsPage.getTotalElements()));
+            return ResponseEntity.ok(
+                    new PageImpl<>(postResponses, paging, postsPage.getTotalElements()));
         } catch (CustomException e) {
             log.error("게시글 목록을 조회할 때 오류가 발생했습니다.", e);
             throw new CustomException(ErrorCode.POST_LIST_FETCH_ERROR);
@@ -111,7 +113,8 @@ public class PostService {
     }
 
     @Transactional
-    public UpdatePostResponse updatePost(Long postId, UpdatePostRequest requestDto, Principal principal) {
+    public UpdatePostResponse updatePost(Long postId, UpdatePostRequest requestDto,
+            Principal principal) {
         try {
             Optional<Post> findPost = postRepository.findById(postId);
 

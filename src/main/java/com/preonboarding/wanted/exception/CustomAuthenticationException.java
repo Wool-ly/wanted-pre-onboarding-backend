@@ -2,11 +2,11 @@ package com.preonboarding.wanted.exception;
 
 public class CustomAuthenticationException extends RuntimeException {
 
-    public CustomAuthenticationException(){
+    public CustomAuthenticationException() {
         super(ErrorCode.USER_AUTHENTICATION_FAILED.getMessage());
     }
 
-    public CustomAuthenticationException(Exception ex){
+    public CustomAuthenticationException(Exception ex) {
         super(ex);
     }
 }

@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Api(value = "게시판 관리")
-@RequestMapping(value ="/api/v1/posts")
+@RequestMapping(value = "/api/v1/posts")
 public class PostController {
 
     private final PostService postService;
@@ -44,7 +44,7 @@ public class PostController {
     @ApiOperation(value = "게시글 작성")
     @PostMapping
     public ResponseEntity<SavePostResponse> savePost(
-        @Valid @RequestBody SavePostRequest requestDto, Authentication authentication) {
+            @Valid @RequestBody SavePostRequest requestDto, Authentication authentication) {
 
         SavePostResponse response = postService.savePost(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -53,10 +53,11 @@ public class PostController {
     // 과제 4. 게시글 목록을 조회하는 엔드포인트
     @ApiOperation(value = "게시글 목록 조회")
     @GetMapping
-    public ResponseEntity<Page<PagingPostResponse>> getPostList(@RequestParam(defaultValue = "5", required = false) Integer pageSize,
+    public ResponseEntity<Page<PagingPostResponse>> getPostList(
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
             @RequestParam(defaultValue = "0", required = false) Integer page) throws Exception {
 
-        Pageable paging  = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC,"createdDt"));
+        Pageable paging = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "createdDt"));
 
         return postService.getPostList(paging);
     }
@@ -72,7 +73,6 @@ public class PostController {
     }
 
     // 과제 6. 특정 게시글을 수정하는 엔드포인트
-    //@PreAuthorize("isAuthenticated() and (( #posts.email == principal.username ))")
     @ApiOperation(value = "게시글 수정")
     @PatchMapping(value = "/{id}")
     public ResponseEntity<UpdatePostResponse> updatePost(

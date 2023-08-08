@@ -76,9 +76,9 @@ public class UserService {
     }
 
     @Transactional
-    public LoginResponse userLogin(LoginRequest requestDto){
+    public LoginResponse userLogin(LoginRequest requestDto) {
 
-        try{
+        try {
             User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
                     () -> new CustomException(ErrorCode.NO_USER)
             );
@@ -95,7 +95,7 @@ public class UserService {
                     .accessToken(jwtTokenProvider.createToken(requestDto.getEmail(), role))
                     .result("로그인에 성공하였습니다.")
                     .build();
-        } catch (CustomException e){
+        } catch (CustomException e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return LoginResponse
                     .builder()

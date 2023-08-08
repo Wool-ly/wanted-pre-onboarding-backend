@@ -11,7 +11,7 @@ public enum ErrorCode {
     NO_USER(400, "CM_002", "존재하지 않는 사용자입니다."),
     ADMIN_TOKEN(400, "CM_003", "관리자 암호가 일치하지 않습니다."),
     SAME_EMAIL(400, "CM_004", "동일한 이메일이 존재합니다."),
-    NO_LOGIN(401,"CM_005", "로그인이 필요합니다."),
+    NO_LOGIN(401, "CM_005", "로그인이 필요합니다."),
     NO_ADMIN(403, "CM_006", "권한이 없는 사용자입니다."),
     METHOD_NOT_ALLOWED(405, "CM_007", "허용되지 않는 메서드입니다."),
     BAD_CREDENTIALS(400, "CM_008", "인증에 실패하였습니다."),
@@ -33,7 +33,7 @@ public enum ErrorCode {
     IO_ERROR(400, "CM_014", "입력/출력 값이 유효하지 않습니다."),
 
     // com.google.gson JSON 파싱 실패
-    JSON_PARSE_ERROR(400,"CM_015", "JSON으로의 변환이 실패했습니다."),
+    JSON_PARSE_ERROR(400, "CM_015", "JSON으로의 변환이 실패했습니다."),
 
     // com.fasterxml.jackson.core Processing Error
     JACKSON_PROCESS_ERROR(400, "CM_016", "com.fasterxml.jackson.core 프로세스 오류입니다."),
@@ -45,7 +45,7 @@ public enum ErrorCode {
     NOT_FOUND_ERROR(404, "CM_018", "찾을 수 없는 리소스입니다."),
 
     // NULL Point Exception 발생
-    NULL_POINT_ERROR( 404, "CM_019", "입력값이 존재하지 않습니다."),
+    NULL_POINT_ERROR(404, "CM_019", "입력값이 존재하지 않습니다."),
 
     // @RequestBody 및 @RequestParam, @PathVariable 값이 유효하지 않음
     NOT_VALID_ERROR(404, "CM_020", "입력 값이 유효하지 않습니다."),
@@ -56,14 +56,14 @@ public enum ErrorCode {
     // 서버가 처리 할 방법을 모르는 경우 발생
     INTERNAL_SERVER_ERROR(500, "CM_022", "서버 내부에서 오류가 발생했습니다."),
 
-    
+
     INVALID_PASSWORD(400, "CM_023", "비밀번호가 일치하지 않습니다."),
-    
+
     // 게시글 관련
-    POST_LIST_FETCH_ERROR(400, "CM_024","게시글 목록 조회 중 오류가 발생했습니다."),
-    POST_NOT_FOUND(400, "CM_025","해당 게시글이 존재하지 않습니다."),
-    UNAUTHORIZED_UPDATE(400, "CM_026","게시글 수정 권한이 없습니다."),
-    UNAUTHORIZED_DELETE(400, "CM_027","게시글 수정 권한이 없습니다."),
+    POST_LIST_FETCH_ERROR(400, "CM_024", "게시글 목록 조회 중 오류가 발생했습니다."),
+    POST_NOT_FOUND(400, "CM_025", "해당 게시글이 존재하지 않습니다."),
+    UNAUTHORIZED_UPDATE(400, "CM_026", "게시글 수정 권한이 없습니다."),
+    UNAUTHORIZED_DELETE(400, "CM_027", "게시글 수정 권한이 없습니다."),
     EMPTY_POST_LIST(400, "CM_028", "게시글 목록이 비어 있습니다."),
 
     // JWT AUTH
@@ -81,7 +81,8 @@ public enum ErrorCode {
     LOGIN_FAILED(401, "AUTH_008", "로그인에 실패하였습니다."),
 
     /**
-     * ******************************* Custom Error CodeList ***************************************
+     * ******************************* Custom Error CodeList
+     * ***************************************
      */
     // Transaction Insert Error
     INSERT_ERROR(200, "9999", "Insert 트랜잭션 오류입니다."),
@@ -90,10 +91,7 @@ public enum ErrorCode {
     UPDATE_ERROR(200, "9999", "Update 트랜잭션 오류입니다."),
 
     // Transaction Delete Error
-    DELETE_ERROR(200, "9999", "Delete 트랜잭션 오류입니다.")
-
-
-    ; // End
+    DELETE_ERROR(200, "9999", "Delete 트랜잭션 오류입니다."); // End
 
     private int status;
     private final String code;
