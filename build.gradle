@@ -48,6 +48,10 @@ dependencies {
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
 
+	// Apache Commons Lang
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+
+	// h2 database
 	implementation 'com.h2database:h2'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	runtimeOnly 'com.h2database:h2'

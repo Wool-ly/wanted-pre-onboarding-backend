@@ -1,9 +1,12 @@
 package com.preonboarding.wanted.security;
 
 import com.preonboarding.wanted.entity.UserRole;
+import com.preonboarding.wanted.exception.ErrorCode;
 import com.preonboarding.wanted.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -11,9 +14,10 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.Base64;
 import java.util.Date;
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,7 +34,7 @@ public class JwtTokenProvider {
     private String secretKey;
 
     //토큰 유효시간 설정
-    private long tokenValidTime = 1000L * 60 * 30; // 30분
+    private final long tokenValidTime = 1000L * 60 * 30; // 30분
 
     //secretkey를 미리 인코딩 해줌.
     @PostConstruct
@@ -56,44 +60,52 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT") //헤더
                 .setClaims(claims) // 페이로드
-                .signWith(SignatureAlgorithm.HS256, secretKey)  // 서명. 사용할 암호화 알고리즘과 signature 에 들어갈 secretKey 세팅
+                .signWith(SignatureAlgorithm.HS256,
+                        secretKey)  // 서명. 사용할 암호화 알고리즘과 signature 에 들어갈 secretKey 세팅
                 .compact();
     }
 
     // 토큰의 유효성 + 만료일자 확인  // -> 토큰이 expire되지 않았는지 True/False로 반환해줌.
-    public boolean validateToken(String jwtToken) {
+    public boolean validateToken(HttpServletRequest request, String jwtToken) {
+
+        String bearerToken = request.getHeader("Authorization");
+
+        if (bearerToken == null || bearerToken.trim().isEmpty() || bearerToken.equals("Bearer")
+                || bearerToken.equals("Bearer ")) {
+            log.info("WRONG_BEARER_TOKEN");
+            throw new JwtException(ErrorCode.MISSING_TOKEN.getMessage());
+        }
         try {
-            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(jwtToken);
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            String.format("exception : %s, message : 잘못된 JWT 서명입니다.", e.getClass().getName());
-            throw new TokenNotValidateException("잘못된 JWT 서명입니다.", e);
-
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (SecurityException e) {
+            log.info("SignatureException");
+            throw new JwtException(ErrorCode.MALFORMED_TOKEN.getMessage());
+        } catch (MalformedJwtException e) {
+            log.info("MalformedJwtException");
+            throw new JwtException(ErrorCode.MALFORMED_TOKEN.getMessage());
         } catch (ExpiredJwtException e) {
-            String.format("exception : %s, message : 만료된 JWT 토큰입니다.", e.getClass().getName());
-            throw new TokenNotValidateException("만료된 JWT 토큰입니다.", e);
-
+            log.info("ExpiredJwtException");
+            throw new JwtException(ErrorCode.EXPIRED_TOKEN.getMessage());
         } catch (UnsupportedJwtException e) {
-            String.format("exception : %s, message : 지원되지 않는 JWT 토큰입니다.", e.getClass().getName());
-            throw new TokenNotValidateException("지원되지 않는 JWT 토큰입니다.", e);
-
-        } catch (IllegalArgumentException e) {
-            String.format("exception : %s, message : JWT 토큰이 잘못되었습니다.", e.getClass().getName());
-            throw new TokenNotValidateException("JWT 토큰이 잘못되었습니다.", e);
+            log.info("UnsupportedJwtException");
+            throw new JwtException(ErrorCode.UNSUPPORTED_TOKEN.getMessage());
         }
     }
 
     //JWT 토큰에서 인증정보 조회
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(getUserEmail(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "",
+                userDetails.getAuthorities());
     }
 
     // 토큰에서 회원 정보 추출
     public String getUserEmail(String token) {
         try {
-            return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("email");
-        } catch(ExpiredJwtException e) {
+            return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+                    .get("email");
+        } catch (ExpiredJwtException e) {
             return e.getClaims().getSubject();
         }
     }

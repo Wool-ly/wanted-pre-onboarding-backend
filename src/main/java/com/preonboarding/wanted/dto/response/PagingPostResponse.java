@@ -1,6 +1,8 @@
 package com.preonboarding.wanted.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
@@ -36,10 +38,14 @@ public class PagingPostResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime updatedDt;
 
-    private int pageNo;
-    private int pageSize;
-    private long totalElements;
-    private int totalPages;
-    private boolean last;
+    @JsonInclude(Include.NON_NULL)
+    @ApiModelProperty(name = "결과", required = true)
+    private String result;
+
+    // result를 설정하는 메서드 추가
+    public void setResult(String result) {
+        this.result = result;
+    }
+
 
 }
