@@ -34,7 +34,7 @@
 
 ### [현재 배포 중인인 AWS 서버를 통해 Postman으로 URL을 호출하는 경우]
 
-API 배포 서버 URL : http://3.37.214.129:8080/
+API 배포 서버 URL : http://3.37.214.129:8080/ (230903 배포 중단)
 
 포스트맨 API 명세서 : https://documenter.getpostman.com/view/23934112/2s9XxyQDCH
 
